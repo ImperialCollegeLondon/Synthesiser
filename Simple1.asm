@@ -12,6 +12,7 @@ delay_count res 1   ; reserve one byte for counter in the delay routine
 
 tables	udata	0x400    ; reserve data anywhere in RAM (here at 0x400)
 myArray res 0x80    ; reserve 128 bytes for message data
+slope	res 1
 
 rst	code	0    ; reset vector
 	goto	setup
@@ -55,7 +56,7 @@ main_loop
 	cpfslt	keypadval	; go to top of loop as button has been released
 				;THIS NEEDS TO BE CHANGED
 	goto	OUTPUT_ZERO
-	call	keypad_read_slope
+	call	get_slope
 	
 	
 	
@@ -68,12 +69,12 @@ main_loop
 	
 	
 	
-	goto	keypad_read_loop
+	goto	main_loop
 	
 	
 	
 	
-Character_Setup	    ; save all the accumulators at address which is coordinate
+Character_Setup	    ; save all the slopes at address which is coordinate
 	movlw	b'00110001'	; 1 
 	movwf	0x77
 	movlw	b'00110010'	; 2
@@ -142,6 +143,8 @@ operations_loop
 	goto	Move_Display
 	return
 	
+
+	
 	
 	
 keypad_read_rows
@@ -165,10 +168,10 @@ keypad_read_columns
 	return
 	
 	
-keypad_read_slope
+get_slope
 	movff	keypadval, FSR2L
 	clrf	FSR2H		;CANT REMEMBER WHY WE DID THIS
-	movf    INDF2, W	;Read contents of address in FSR2 not changing it
+	movff   INDF2, slope	;Read contents of address in FSR2 not changing it
 	return
 	
 
