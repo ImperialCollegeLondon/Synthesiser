@@ -15,19 +15,14 @@ myArray res 0x80    ; reserve 128 bytes for message data
 slope	res 1
 accum	res 1
 acc_max	res 1
-
+wav_sel	res 1
+	
 rst	code	0    ; reset vector
 	goto	setup
 
 pdata	code    ; a section of programme memory for storing data
-	; ******* myTable, data in programme memory, and its length *****
-myTable data	    "Hello World!\n"	; message, plus carriage return
-	constant    myTable_l=.13	; length of data
 	
-	; ******* My data and where to put it in RAM *
-myTable db	0x55,0xAA
-	constant myArray=0x400	; Address in RAM for data
-		; Address of counter variable
+
 main	code
 	; ******* Programme FLASH read Setup Code ***********************
 setup	bcf	EECON1, CFGS	; point to Flash program memory  
@@ -42,6 +37,9 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	goto	start
 	
 	; ******* Main programme ****************************************
+	; PORTE for waveform control
+	; PORTF for keypad inputs
+	; PORTD sends SPI, do we need to set as output?
 start
 
 main_loop
@@ -63,24 +61,17 @@ main_loop
 	bra	get_slope	; gets slope corresponding to button into W
 	bra	accumulate	; adds slope to the accumulator, if it becomes
 				; greater than the max_acc then reset accum to zero
-	call	waveform_select
-	
-	
-	
-	
+	call	waveform_select	; selects waveform and makes W value to output
 	call	SPI_MasterTransmit;takes data in through W
-	call	delay		    ; WHY?
-	goto	0
-	
-	
+	call	delay		    ; WHY? HOW LONG?
 	
 	goto	main_loop
 	
 	
 accumulate 
 	addwf	accum, F	 ; adds slope to the accumulator, if it becomes
-	movf	acc_max		 ; greater than the max_acc then reset accum to zero
-	cpfsgt	accum
+	movlw	0xfe		 ; greater than the 0xfe then reset accum to zero
+	cpfsgt	accum		 
 	return
 	movlw	0x00
 	movwf	accum
@@ -93,38 +84,38 @@ output_zero
 	goto	main_loop
 	
 Slope_Setup	    ; save all the slopes at address which is coordinate on keypad
-	movlw	b'00110001'	; 1 
-	movwf	0x77
-	movlw	b'00110010'	; 2
-	movwf	0xB7
-	movlw	b'00110011'	; 3
-	movwf	0xD7
-	movlw	b'00110100'	; 4
-	movwf	0x7B
-	movlw	b'00110101'	; 5
-	movwf	0xBB
-	movlw	b'00110110'	; 6
-	movwf	0xDB
-	movlw	b'00110111'	; 7
-	movwf	0x7D
-	movlw	b'00111000'	; 8
-	movwf	0xBD
-	movlw	b'00111001'	; 9
-	movwf	0xDD
-	movlw	b'00110000'	; 0
-	movwf	0xBE
-	movlw	b'01000001'	; A
-	movwf	0x7E
-	movlw	b'01000010'	; B
-	movwf	0xDE
-	movlw	b'01000011'	; C
-	movwf	0xEE
-	movlw	b'01000100'	; D
-	movwf	0xED
-	movlw	b'01000101'	; E
-	movwf	0xEB
-	movlw	b'01000110'	; F
-	movwf	0xE7
+	movlw	0x01		; slopes must correspond to particular freqs
+	movwf	0x77		; 1
+	movlw	0x02	
+	movwf	0xB7		; 2
+	movlw	0x03	
+	movwf	0xD7		; 3
+	movlw	0x04	
+	movwf	0x7B		; 4
+	movlw	0x05	
+	movwf	0xBB		; 5
+	movlw	0x06	
+	movwf	0xDB		; 6
+	movlw	0x07	
+	movwf	0x7D		; 7
+	movlw	0x08	
+	movwf	0xBD		; 8
+	movlw	0x09	
+	movwf	0xDD		; 9
+	movlw	0x0a	
+	movwf	0xBE		; 0
+	movlw	0x0b	
+	movwf	0x7E		; A
+	movlw	0x0c	
+	movwf	0xDE		; B
+	movlw	0x0d	
+	movwf	0xEE		; C
+	movlw	0x0e	
+	movwf	0xED		; D
+	movlw	0x0f	
+	movwf	0xEB		; E
+	movlw	0x10	
+	movwf	0xE7		; F
 	
 SPI_MasterInit	; Set Clock edge to positive
 	bcf	SSP2STAT, CKE
@@ -150,21 +141,22 @@ Wait_Transmit	; Wait for transmission to complete
 
 
 waveform_select
+	movff	PORTF, wav_sel	; save to prevent problems if released in loop
 	movlw	0x00
-	cpfsgt	PORTF, ACCESS
+	cpfsgt	wav_sel, ACCESS
 	return	; want to stay at current waveform
 	movlw	0x01
-	cpfsgt	PORTF, ACCESS
+	cpfsgt	wav_sel, ACCESS
 	goto	sawtooth	; make sure these return
 	movlw	0x02
-	cpfsgt	PORTF, ACCESS 
+	cpfsgt	wav_sel, ACCESS 
 	goto	square		; make sure these return
 	movlw	0x04
-	cpfsgt	PORTF, ACCESS 
+	cpfsgt	wav_sel, ACCESS 
 	goto	triangle	; make sure these return
 	movlw	0x08
-	cpfsgt	PORTF, ACCESS 
-	goto	sine	; make sure these return
+	cpfsgt	wav_sel, ACCESS 
+	goto	sine		; make sure these return
 	
 	return
 	
@@ -172,11 +164,24 @@ sawtooth
 	movf accum
 	return 
 
-square
-	;conditions for the square wave value based on accum
+square	;conditions for the square wave value based on accum
+	movlw	0x80	    ; midpoint of accumulator
+	cpfsgt	accum
+	goto	sqr_zero 
+	movlw	0xff	    ; square wave max amplitude
+	return
+sqr_zero
+	movlw	0x00
+	return
 	
 triangle
-	; reverse accum somehow
+	movlw	0x01
+	cpfslt	accum
+	goto	sawtooth
+	movlw	0xff	    ; max value of accumulator
+	subfwb	accum
+	return
+	
 	
 sine
 	;look up sine valuein table corresponding to the value of accum
