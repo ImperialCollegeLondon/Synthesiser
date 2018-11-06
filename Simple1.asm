@@ -179,7 +179,7 @@ sqr_zero
 	
 triangle	
 	movlw	0x01
-	cpfslt	accum	    ; make change of direction if accumulator has reached
+	cpfsgt	accum	    ; make change of direction if accumulator has reached
 	bra	up_down	    ; its peak ie. now it is 0x00
 	movlw	0x02
 	cpfsgt	tri	    ; 0=up, 3=down
