@@ -35,6 +35,8 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movlw	0x0f
 	movwf	TRISE		; set 4 PORTF all inputs for 4 waveforms control
 	goto	start
+	movlw	0x08
+	movwf	wav_sel		; default is sine
 	
 	; ******* Main programme ****************************************
 	; PORTE for waveform control
@@ -141,10 +143,9 @@ Wait_Transmit	; Wait for transmission to complete
 
 
 waveform_select
+	movlw	0x01
+	cpfslt	PORTF, ACCESS	; want to stay at current waveform	
 	movff	PORTF, wav_sel	; save to prevent problems if released in loop
-	movlw	0x00
-	cpfsgt	wav_sel, ACCESS
-	return	; want to stay at current waveform
 	movlw	0x01
 	cpfsgt	wav_sel, ACCESS
 	goto	sawtooth	; make sure these return
