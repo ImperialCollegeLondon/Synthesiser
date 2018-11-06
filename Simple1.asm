@@ -13,6 +13,8 @@ delay_count res 1   ; reserve one byte for counter in the delay routine
 tables	udata	0x400    ; reserve data anywhere in RAM (here at 0x400)
 myArray res 0x80    ; reserve 128 bytes for message data
 slope	res 1
+accum	res 1
+acc_max	res 1
 
 rst	code	0    ; reset vector
 	goto	setup
@@ -35,6 +37,8 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	call	ADC_Setup	; setup ADC
 	call	SPI_MasterInit
 	call	Character_Setup
+	movlw	0x0f
+	movwf	TRISE		; set 4 PORTF all inputs for 4 waveforms control
 	goto	start
 	
 	; ******* Main programme ****************************************
@@ -49,22 +53,23 @@ main_loop
 	call	keypad_read_rows
 	movlw	0x0f
 	cpfslt	keypadval
-	goto	OUTPUT_ZERO	; go to top of loop as no button is pressed
+	goto	output_zero	; output zero as no button is pressed
 				;THIS NEEDS TO BE CHANGED
 	call	keypad_read_columns
 	movlw	0xEF		
-	cpfslt	keypadval	; go to top of loop as button has been released
+	cpfslt	keypadval	; output zero as button has been released
 				;THIS NEEDS TO BE CHANGED
-	goto	OUTPUT_ZERO
-	call	get_slope
-	
-	
+	goto	output_zero
+	bra	get_slope	; gets slope corresponding to button into W
+	bra	accumulate	; adds slope to the accumulator, if it becomes
+				; greater than the max_acc then reset accum to zero
+	call	waveform_select
 	
 	
 	
 	
 	call	SPI_MasterTransmit;takes data in through W
-	call	delay
+	call	delay		    ; WHY?
 	goto	0
 	
 	
@@ -72,9 +77,22 @@ main_loop
 	goto	main_loop
 	
 	
+accumulate 
+	addwf	accum, F	 ; adds slope to the accumulator, if it becomes
+	movf	acc_max		 ; greater than the max_acc then reset accum to zero
+	cpfsgt	accum
+	return
+	movlw	0x00
+	movwf	accum
+	return
+
+output_zero
+	movlw	0x00
+	call	SPI_MasterTransmit;takes data in through W
+	call	delay
+	goto	main_loop
 	
-	
-Character_Setup	    ; save all the slopes at address which is coordinate
+Slope_Setup	    ; save all the slopes at address which is coordinate on keypad
 	movlw	b'00110001'	; 1 
 	movwf	0x77
 	movlw	b'00110010'	; 2
@@ -131,25 +149,43 @@ Wait_Transmit	; Wait for transmission to complete
 	return
 
 
-operations_loop
+waveform_select
 	movlw	0x00
-	cpfsgt	PORTD, ACCESS
-	return	; no input on PORTD
+	cpfsgt	PORTF, ACCESS
+	return	; want to stay at current waveform
 	movlw	0x01
-	cpfsgt	PORTD, ACCESS
-	goto	Clear_Display
+	cpfsgt	PORTF, ACCESS
+	goto	sawtooth	; make sure these return
 	movlw	0x02
-	cpfsgt	PORTD, ACCESS 
-	goto	Move_Display
+	cpfsgt	PORTF, ACCESS 
+	goto	square		; make sure these return
+	movlw	0x04
+	cpfsgt	PORTF, ACCESS 
+	goto	triangle	; make sure these return
+	movlw	0x08
+	cpfsgt	PORTF, ACCESS 
+	goto	sine	; make sure these return
+	
 	return
 	
+sawtooth
+	movf accum
+	return 
 
+square
+	;conditions for the square wave value based on accum
+	
+triangle
+	; reverse accum somehow
+	
+sine
+	;look up sine valuein table corresponding to the value of accum
 	
 	
 	
 keypad_read_rows
 	movlw   0x0F
-	movwf	TRISE, ACCESS	; PORTE all inputs
+	movwf	TRISE, ACCESS	; PORTE half inputs
 	movlw	0xFF		; 256 loop delay 
 	movwf	delay_count
 	call	delay		; delay for voltage to settle
@@ -159,7 +195,7 @@ keypad_read_rows
 
 keypad_read_columns
 	movlw   0xF0
-	movwf	TRISE, ACCESS	; PORTE all inputs
+	movwf	TRISE, ACCESS	; PORTE half inputs
 	movlw	0xFF
 	movwf	delay_count
 	call	delay		; delay for voltage to settle
@@ -171,7 +207,7 @@ keypad_read_columns
 get_slope
 	movff	keypadval, FSR2L
 	clrf	FSR2H		;CANT REMEMBER WHY WE DID THIS
-	movff   INDF2, slope	;Read contents of address in FSR2 not changing it
+	movf    INDF2, W	;Read contents of address in FSR2 not changing it
 	return
 	
 
