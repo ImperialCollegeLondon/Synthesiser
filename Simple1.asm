@@ -119,6 +119,44 @@ Slope_Setup	    ; save all the slopes at address which is coordinate on keypad
 	movlw	0x10	
 	movwf	0xE7		; F
 	
+	
+Sine_Setup	    ; save all the sine values from 0 to 2pi at cosectutive addresses
+	movlw	0x01		; 
+	movwf	0x77		; 1
+	movlw	0x02	
+	movwf	0xB7		; 2
+	movlw	0x03	
+	movwf	0xD7		; 3
+	movlw	0x04	
+	movwf	0x7B		; 4
+	movlw	0x05	
+	movwf	0xBB		; 5
+	movlw	0x06	
+	movwf	0xDB		; 6
+	movlw	0x07	
+	movwf	0x7D		; 7
+	movlw	0x08	
+	movwf	0xBD		; 8
+	movlw	0x09	
+	movwf	0xDD		; 9
+	movlw	0x0a	
+	movwf	0xBE		; 0
+	movlw	0x0b	
+	movwf	0x7E		; A
+	movlw	0x0c	
+	movwf	0xDE		; B
+	movlw	0x0d	
+	movwf	0xEE		; C
+	movlw	0x0e	
+	movwf	0xED		; D
+	movlw	0x0f	
+	movwf	0xEB		; E
+	movlw	0x10	
+	movwf	0xE7		; F
+	
+	
+	
+	
 SPI_MasterInit	; Set Clock edge to positive
 	bcf	SSP2STAT, CKE
 	; MSSP enable; CKP=1; SPI master, clock=Fosc/64 (1MHz)
