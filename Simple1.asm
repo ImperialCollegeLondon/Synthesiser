@@ -160,10 +160,12 @@ waveform_select
 	
 	return
 	
+	
 sawtooth
 	movf accum
 	return 
 
+	
 square	;conditions for the square wave value based on accum
 	movlw	0x80	    ; midpoint of accumulator
 	cpfsgt	accum
@@ -174,13 +176,31 @@ sqr_zero
 	movlw	0x00
 	return
 	
-triangle
+	
+triangle	
 	movlw	0x01
-	cpfslt	accum
+	cpfslt	accum	    ; make change of direction if accumulator has reached
+	bra	up_down	    ; its peak ie. now it is 0x00
+	movlw	0x02
+	cpfsgt	tri	    ; 0=up, 3=down
 	goto	sawtooth
 	movlw	0xff	    ; max value of accumulator
 	subfwb	accum
 	return
+up_down			    ; make decision whether to go up or down at peak
+	movlw	0x02	    ; of accumulator
+	cpfsgt	tri	    ; tri = 0x00 went up now go down
+	goto	up	    ; tri = 0x03 went down now go up
+	goto	down
+up
+	movlw	0x03	    ; now go down
+	movwf	tri
+	return
+down
+	movlw	0x00	    ; now go up
+	movwf	tri
+	return
+
 	
 	
 sine
