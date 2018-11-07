@@ -1,21 +1,17 @@
 	#include p18f87k22.inc
 
 	extern	UART_Setup, UART_Transmit_Message   ; external UART subroutines
-	extern  LCD_Setup, LCD_Write_Message	    ; external LCD subroutines
-	extern	LCD_Write_Hex			    ; external LCD subroutines
 	extern  ADC_Setup, ADC_Read		    ; external ADC routines
-	extern	multiply816, multiply1616, multiply824
+	;extern	multiply816, multiply1616, multiply824
 	
 acs0	udata_acs   ; reserve data space in access ram
 counter	    res 1   ; reserve one byte for a counter variable
 delay_count res 1   ; reserve one byte for counter in the delay routine
-
-tables	udata	0x400    ; reserve data anywhere in RAM (here at 0x400)
-myArray res 0x80    ; reserve 128 bytes for message data
-slope	res 1
 accum	res 1
 acc_max	res 1
 wav_sel	res 1
+tri	res 1	    ; for selecting up or down for triangle wave
+keypadval res 1
 	
 rst	code	0    ; reset vector
 	goto	setup
@@ -28,29 +24,34 @@ main	code
 setup	bcf	EECON1, CFGS	; point to Flash program memory  
 	bsf	EECON1, EEPGD 	; access Flash program memory
 	call	UART_Setup	; setup UART
-	call	LCD_Setup	; setup LCD
 	call	ADC_Setup	; setup ADC
 	call	SPI_MasterInit
-	call	Character_Setup
+	call	Slope_Setup
 	movlw	0x0f
-	movwf	TRISE		; set 4 PORTF all inputs for 4 waveforms control
+	movwf	TRISF		; set 4 PORTF all inputs for 4 waveforms control
+	movlw	0x00
+	movwf	TRISH		; set PORTH output
 	goto	start
-	movlw	0x08
-	movwf	wav_sel		; default is sine
+	movlw	0x01
+	movwf	wav_sel		; default is sawtooth
 	
 	; ******* Main programme ****************************************
-	; PORTE for waveform control
-	; PORTF for keypad inputs
+	; PORTF for waveform control
+	; PORTE for keypad inputs
 	; PORTD sends SPI, do we need to set as output?
 start
-
+	;NEED TO SEND TWO 8 BIT NUMBERS RATHER THAN ONE WITHIN ONE CS PULSE!!!!
+	
+	
 main_loop
 	banksel PADCFG1		; PADCFG1 is not in Access Bank!!
 	bsf	PADCFG1, REPU, BANKED	; PortE pull-ups on 
 	movlb	0x00		; set BSR back to Bank 0
 	clrf	LATE
-	call	operations_loop
+	
 	call	keypad_read_rows
+	nop
+	nop
 	movlw	0x0f
 	cpfslt	keypadval
 	goto	output_zero	; output zero as no button is pressed
@@ -58,14 +59,27 @@ main_loop
 	call	keypad_read_columns
 	movlw	0xEF		
 	cpfslt	keypadval	; output zero as button has been released
-				;THIS NEEDS TO BE CHANGED
-	goto	output_zero
-	bra	get_slope	; gets slope corresponding to button into W
-	bra	accumulate	; adds slope to the accumulator, if it becomes
+	goto	output_zero	;THIS NEEDS TO BE CHANGED
+	
+	call	get_slope	; gets slope corresponding to button. puts in W
+	call	accumulate	; adds slope to the accumulator, if it becomes
 				; greater than the max_acc then reset accum to zero
+	
+	
+	movlw	0x00
+	movwf	PORTH		    ; set CS low
+	movlw	0x00		    ;SEND ZERO FOR FIRST BYTE TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
+	call	SPI_MasterTransmit;takes data in through W
+	movlw	0x01		    ; set CS high
+	movwf	PORTH			
+					
+	movlw	0x00
+	movwf	PORTH		    ; set CS low
 	call	waveform_select	; selects waveform and makes W value to output
 	call	SPI_MasterTransmit;takes data in through W
-	call	delay		    ; WHY? HOW LONG?
+	movlw	0x01		    ; set CS high
+	movwf	PORTH
+
 	
 	goto	main_loop
 	
@@ -120,39 +134,39 @@ Slope_Setup	    ; save all the slopes at address which is coordinate on keypad
 	movwf	0xE7		; F
 	
 	
-Sine_Setup	    ; save all the sine values from 0 to 2pi at cosectutive addresses
-	movlw	0x01		; 
-	movwf	0x77		; 1
-	movlw	0x02	
-	movwf	0xB7		; 2
-	movlw	0x03	
-	movwf	0xD7		; 3
-	movlw	0x04	
-	movwf	0x7B		; 4
-	movlw	0x05	
-	movwf	0xBB		; 5
-	movlw	0x06	
-	movwf	0xDB		; 6
-	movlw	0x07	
-	movwf	0x7D		; 7
-	movlw	0x08	
-	movwf	0xBD		; 8
-	movlw	0x09	
-	movwf	0xDD		; 9
-	movlw	0x0a	
-	movwf	0xBE		; 0
-	movlw	0x0b	
-	movwf	0x7E		; A
-	movlw	0x0c	
-	movwf	0xDE		; B
-	movlw	0x0d	
-	movwf	0xEE		; C
-	movlw	0x0e	
-	movwf	0xED		; D
-	movlw	0x0f	
-	movwf	0xEB		; E
-	movlw	0x10	
-	movwf	0xE7		; F
+;Sine_Setup	    ; save all the sine values from 0 to 2pi at consectutive addresses
+;	movlw	0x01		; 
+;	movwf	0x77		; 1
+;	movlw	0x02	
+;	movwf	0xB7		; 2
+;	movlw	0x03	
+;	movwf	0xD7		; 3
+;	movlw	0x04	
+;	movwf	0x7B		; 4
+;	movlw	0x05	
+;	movwf	0xBB		; 5
+;	movlw	0x06	
+;	movwf	0xDB		; 6
+;	movlw	0x07	
+;	movwf	0x7D		; 7
+;	movlw	0x08	
+;	movwf	0xBD		; 8
+;	movlw	0x09	
+;	movwf	0xDD		; 9
+;	movlw	0x0a	
+;	movwf	0xBE		; 0
+;	movlw	0x0b	
+;	movwf	0x7E		; A
+;	movlw	0x0c	
+;	movwf	0xDE		; B
+;	movlw	0x0d	
+;	movwf	0xEE		; C
+;	movlw	0x0e	
+;	movwf	0xED		; D
+;	movlw	0x0f	
+;	movwf	0xEB		; E
+;	movlw	0x10	
+;	movwf	0xE7		; F
 	
 	
 	
@@ -201,7 +215,7 @@ waveform_select
 	
 	
 sawtooth
-	movf accum
+	movf accum, W
 	return 
 
 	
@@ -293,15 +307,7 @@ get_slope
 	
 	
 	
-Clear_Display
-	call	LCD_Clear_Display
-	return
-	;goto	operations_loop
 
-Move_Display
-	call	LCD_Clear_Display
-	call	LCD_Move_Display
-	goto	$		; goto current line in code
 
 	; a delay subroutine if you need one, times around loop in delay_count
 delay	decfsz	delay_count	; decrement until zero
