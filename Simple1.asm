@@ -7,11 +7,12 @@
 acs0	udata_acs   ; reserve data space in access ram
 counter	    res 1   ; reserve one byte for a counter variable
 delay_count res 1   ; reserve one byte for counter in the delay routine
-accum	res 1
-acc_max	res 1
-wav_sel	res 1
-tri	res 1	    ; for selecting up or down for triangle wave
-keypadval res 1
+accum	    res 1
+acc_max	    res 1
+wav_sel	    res 1
+tri	    res 1   ; reserve one byte for selecting up/down for triangle wave
+keypadval   res 1
+output	    res	1
 	
 rst	code	0    ; reset vector
 	goto	setup
@@ -64,40 +65,39 @@ main_loop
 	call	get_slope	; gets slope corresponding to button. puts in W
 	call	accumulate	; adds slope to the accumulator, if it becomes
 				; greater than the max_acc then reset accum to zero
-	
-	
-	movlw	0x00
-	movwf	PORTH		    ; set CS low
-	movlw	0x00		    ;SEND ZERO FOR FIRST BYTE TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
-	call	SPI_MasterTransmit;takes data in through W
-	movlw	0x01		    ; set CS high
-	movwf	PORTH			
-					
-	movlw	0x00
-	movwf	PORTH		    ; set CS low
 	call	waveform_select	; selects waveform and makes W value to output
+	movwf	output
+	;goto	$
+
+
+	;goto	$
+transmit
+	movlw	0x00
+	movwf	PORTH		    ; set CS low
+	movlw	0x50		    ;SEND ZERO FOR FIRST BYTE TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
+	call	SPI_MasterTransmit;takes data in through W
+	movf	output, W
 	call	SPI_MasterTransmit;takes data in through W
 	movlw	0x01		    ; set CS high
 	movwf	PORTH
-
-	
 	goto	main_loop
 	
+
+output_zero
+	movlw	0x00
+	movwf	output
+	goto	transmit
 	
 accumulate 
 	addwf	accum, F	 ; adds slope to the accumulator, if it becomes
-	movlw	0xfe		 ; greater than the 0xfe then reset accum to zero
+	movlw	0xfe		 ; greater than the 0xfe then reset accum to zero 
 	cpfsgt	accum		 
 	return
 	movlw	0x00
 	movwf	accum
 	return
 
-output_zero
-	movlw	0x00
-	call	SPI_MasterTransmit;takes data in through W
-	call	delay
-	goto	main_loop
+
 	
 Slope_Setup	    ; save all the slopes at address which is coordinate on keypad
 	movlw	0x01		; slopes must correspond to particular freqs
