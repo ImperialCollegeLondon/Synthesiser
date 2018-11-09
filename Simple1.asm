@@ -23,8 +23,8 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	bsf	EECON1, EEPGD 	; access Flash program memory
 	call	UART_Setup	; setup UART
 	call	ADC_Setup	; setup ADC
-	call	SPI_MasterInit
-	call	Slope_Setup
+;	call	SPI_MasterInit
+;	call	Slope_Setup
 	movlw	0x0f
 	movwf	TRISF		; set 4 PORTF all inputs for 4 waveforms control
 	movlw	0x00
@@ -48,16 +48,16 @@ testit  code	0x0008	; high vector, no low vector
 	retfie  1		; fast return from interrupt
 	
 start	nop
-	movlw	b'00110001'	; Set timer1 to 16-bit, Fosc/4/8
+	movlw	b'00000001'	; Set timer1 to 16-bit, Fosc/4
 	movwf	T1CON		; = 2MHz clock rate
 	banksel CCPTMRS1	; not in access bank!
 	bcf	CCPTMRS1,C4TSEL1    ; Choose Timer1
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x1E		; set period compare registers
+	movlw	0x00		; set period compare registers
 	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
-	movlw	0x84
+	movlw	0x01
 	movwf	CCPR4L
 	bsf	PIE4,CCP4IE	; Enable CCP4 interrupt
 	bsf	INTCON,PEIE	; Enable peripheral interrupts
@@ -74,9 +74,15 @@ start	nop
 blink
 	movlw	0x00
 	movwf	PORTH
-	nop
+	movlw	0xff
+	movwf	delay_count
+	call	delay
 	movlw	0x01
 	movwf	PORTH
+	return
+	
+delay	decfsz	delay_count	; decrement until zero
+	bra delay
 	return
 	
 	end
