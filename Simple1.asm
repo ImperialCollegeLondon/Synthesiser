@@ -17,9 +17,6 @@ output	    res	1
 rst	code	0    ; reset vector
 	goto	setup
 
-pdata	code    ; a section of programme memory for storing data
-	
-
 main	code
 	; ******* Programme FLASH read Setup Code ***********************
 setup	bcf	EECON1, CFGS	; point to Flash program memory  
@@ -35,14 +32,54 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	goto	start
 	movlw	0x01
 	movwf	wav_sel		; default is sawtooth
-	
+	goto    start
 	; ******* Main programme ****************************************
 	; PORTF for waveform control
 	; PORTE for keypad inputs
 	; PORTD sends SPI, do we need to set as output?
-start
-	;NEED TO SEND TWO 8 BIT NUMBERS RATHER THAN ONE WITHIN ONE CS PULSE!!!!
+	; PORTH used for chip select
+
+
+testit  code	0x0008	; high vector, no low vector
+	btfss	PIR4,CCP4IF	; check that this is timer0 interrupt
+	retfie	1		; if not then return
+	call	blink
+	bcf	PIR4,CCP4IF	; clear interrupt flag
+	retfie  1		; fast return from interrupt
 	
+start	nop
+	movlw	b'00110001'	; Set timer1 to 16-bit, Fosc/4/8
+	movwf	T1CON		; = 2MHz clock rate
+	banksel CCPTMRS1	; not in access bank!
+	bcf	CCPTMRS1,C4TSEL1    ; Choose Timer1
+	bcf	CCPTMRS1,C4TSEL0
+	movlw	b'00001011'	; Compare mode, reset on compare match
+	movwf	CCP4CON
+	movlw	0x1E		; set period compare registers
+	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
+	movlw	0x84
+	movwf	CCPR4L
+	bsf	PIE4,CCP4IE	; Enable CCP4 interrupt
+	bsf	INTCON,PEIE	; Enable peripheral interrupts
+	bsf	INTCON,GIE	; Enable all interrupts
+	goto	$		; Sit in infinite loop
+
+;int_hi	code	0x0008	; high vector, no low vector
+;	btfss	INTCON,TMR0IF	; check that this is timer0 interrupt
+;	btfss	INTCON,TMR0IF	; check that this is timer0 interrupt
+;	call	transmit
+;	bcf	INTCON,TMR0IF	; clear interrupt flag
+;	retfie	FAST		; fast return from interrupt
+
+blink
+	movlw	0x00
+	movwf	PORTH
+	nop
+	movlw	0x01
+	movwf	PORTH
+	return
+	
+	end
 	
 main_loop
 	banksel PADCFG1		; PADCFG1 is not in Access Bank!!
@@ -67,14 +104,12 @@ main_loop
 				; greater than the max_acc then reset accum to zero
 	call	waveform_select	; selects waveform and makes W value to output
 	movwf	output
-	;goto	$
+	goto	main_loop
 
-
-	;goto	$
 transmit
 	movlw	0x00
 	movwf	PORTH		    ; set CS low
-	movlw	0x50		    ;SEND ZERO FOR FIRST BYTE TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
+	movlw	0x50		    ;SEND ZERO FOR UPPER NIBBLE OF DATA TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
 	call	SPI_MasterTransmit;takes data in through W
 	movf	output, W
 	call	SPI_MasterTransmit;takes data in through W
@@ -86,7 +121,7 @@ transmit
 output_zero
 	movlw	0x00
 	movwf	output
-	goto	transmit
+	goto	main_loop
 	
 accumulate 
 	addwf	accum, F	 ; adds slope to the accumulator, if it becomes
@@ -96,6 +131,7 @@ accumulate
 	movlw	0x00
 	movwf	accum
 	return
+
 
 
 	
