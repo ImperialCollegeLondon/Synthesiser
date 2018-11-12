@@ -13,6 +13,8 @@ wav_sel	    res 1
 tri	    res 1   ; reserve one byte for selecting up/down for triangle wave
 keypadval   res 1
 output	    res	1
+slope	    res 1
+input	    res 1
 	
 rst	code	0    ; reset vector
 	goto	setup
@@ -23,8 +25,8 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	bsf	EECON1, EEPGD 	; access Flash program memory
 	call	UART_Setup	; setup UART
 	call	ADC_Setup	; setup ADC
-;	call	SPI_MasterInit
-;	call	Slope_Setup
+	call	SPI_MasterInit
+	call	Slope_Setup
 	movlw	0x0f
 	movwf	TRISF		; set 4 PORTF all inputs for 4 waveforms control
 	movlw	0x00
@@ -40,14 +42,16 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	; PORTH used for chip select
 
 
-testit  code	0x0008	; high vector, no low vector
+inter   code	0x0008	; high vector, no low vector
 	btfss	PIR4,CCP4IF	; check that this is timer0 interrupt
 	retfie	1		; if not then return
-	call	blink
+	call	transmit
 	bcf	PIR4,CCP4IF	; clear interrupt flag
 	retfie  1		; fast return from interrupt
 	
 start	nop
+	
+timer	
 	movlw	b'00000001'	; Set timer1 to 16-bit, Fosc/4
 	movwf	T1CON		; = 2MHz clock rate
 	banksel CCPTMRS1	; not in access bank!
@@ -55,38 +59,15 @@ start	nop
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x00		; set period compare registers
+	movlw	0x05		; set period compare registers
 	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
 	movlw	0x01
 	movwf	CCPR4L
 	bsf	PIE4,CCP4IE	; Enable CCP4 interrupt
 	bsf	INTCON,PEIE	; Enable peripheral interrupts
 	bsf	INTCON,GIE	; Enable all interrupts
-	goto	$		; Sit in infinite loop
 
-;int_hi	code	0x0008	; high vector, no low vector
-;	btfss	INTCON,TMR0IF	; check that this is timer0 interrupt
-;	btfss	INTCON,TMR0IF	; check that this is timer0 interrupt
-;	call	transmit
-;	bcf	INTCON,TMR0IF	; clear interrupt flag
-;	retfie	FAST		; fast return from interrupt
 
-blink
-	movlw	0x00
-	movwf	PORTH
-	movlw	0xff
-	movwf	delay_count
-	call	delay
-	movlw	0x01
-	movwf	PORTH
-	return
-	
-delay	decfsz	delay_count	; decrement until zero
-	bra delay
-	return
-	
-	end
-	
 main_loop
 	banksel PADCFG1		; PADCFG1 is not in Access Bank!!
 	bsf	PADCFG1, REPU, BANKED	; PortE pull-ups on 
@@ -99,20 +80,22 @@ main_loop
 	movlw	0x0f
 	cpfslt	keypadval
 	goto	output_zero	; output zero as no button is pressed
-				;THIS NEEDS TO BE CHANGED
+				
 	call	keypad_read_columns
 	movlw	0xEF		
 	cpfslt	keypadval	; output zero as button has been released
-	goto	output_zero	;THIS NEEDS TO BE CHANGED
+	goto	output_zero	
 	
+	movlw	0x01
+	movwf	input		; set the input as 0x01, meaning there is an input
 	call	get_slope	; gets slope corresponding to button. puts in W
-	call	accumulate	; adds slope to the accumulator, if it becomes
-				; greater than the max_acc then reset accum to zero
-	call	waveform_select	; selects waveform and makes W value to output
-	movwf	output
+
 	goto	main_loop
 
 transmit
+	movlw	0x01
+	cpfslt	input		; check if there is an input
+	call	get_output	    ; hopefully this delay isnt a problem
 	movlw	0x00
 	movwf	PORTH		    ; set CS low
 	movlw	0x50		    ;SEND ZERO FOR UPPER NIBBLE OF DATA TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
@@ -121,15 +104,24 @@ transmit
 	call	SPI_MasterTransmit;takes data in through W
 	movlw	0x01		    ; set CS high
 	movwf	PORTH
-	goto	main_loop
+	return
 	
-
+get_output
+	call	accumulate	; adds slope to the accumulator, if it becomes
+				; greater than the max_acc then reset accum to zero
+	call	waveform_select	; selects waveform and makes W value to output
+	movwf	output
+	return
+	
+	
 output_zero
 	movlw	0x00
+	movwf	input		; set input to 0x00 meaning, there is no input
 	movwf	output
 	goto	main_loop
 	
 accumulate 
+	movf	slope, W
 	addwf	accum, F	 ; adds slope to the accumulator, if it becomes
 	movlw	0xfe		 ; greater than the 0xfe then reset accum to zero 
 	cpfsgt	accum		 
@@ -328,6 +320,7 @@ get_slope
 	movff	keypadval, FSR2L
 	clrf	FSR2H		;CANT REMEMBER WHY WE DID THIS
 	movf    INDF2, W	;Read contents of address in FSR2 not changing it
+	movwf	slope
 	return
 	
 
