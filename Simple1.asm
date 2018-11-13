@@ -33,9 +33,6 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movwf	TRISH		; set PORTH output
 ;	movlw	0xFF
 ;	movwf	TRISG		; set PORTG output
-	movlw	0xff
-	movwf	TRISJ		; set 4 PORTJ all inputs for 4 waveforms control
-	goto	start
 	movlw	0x01
 	movwf	wav_sel		; default is sawtooth
 	goto    start
@@ -64,7 +61,7 @@ timer
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x03		; set period compare registers
+	movlw	0x04		; set period compare registers
 	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
 	movlw	0x0c
 	movwf	CCPR4L
@@ -95,7 +92,7 @@ main_loop
 	movwf	input		; set the input as 0x01, meaning there is an input
 	call	get_slope	; gets slope corresponding to button. puts in W
 
-;	goto	main_loop
+	goto	main_loop
 
 transmit
 	movlw	0x01
@@ -120,6 +117,9 @@ get_output
 	
 	
 output_zero
+	movlw	0x01
+	cpfslt	PORTJ, ACCESS	; want to stay at current waveform	
+	movff	PORTJ, wav_sel	; save wav_sel
 	movlw	0x00
 	movwf	input		; set input to 0x00 meaning, there is no input
 	movwf	output
@@ -354,7 +354,8 @@ get_slope
 
 
 	; a delay subroutine if you need one, times around loop in delay_count
-delay	decfsz	delay_count	; decrement until zero	bra delay
+delay	decfsz	delay_count	; decrement until zero	
+	bra delay
 	return
 	
 	
