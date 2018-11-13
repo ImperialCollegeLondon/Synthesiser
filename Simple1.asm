@@ -61,7 +61,7 @@ timer
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x04		; set period compare registers
+	movlw	0x2f		; set period compare registers
 	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
 	movlw	0x0c
 	movwf	CCPR4L
@@ -273,10 +273,12 @@ sqr_zero
 	return
 	
 	
-triangle	
-	movlw	0x01
+triangle
+	movlw	0xff	    ; max value of accumulator
+	subfwb	slope
 	cpfsgt	accum	    ; make change of direction if accumulator has reached
-	bra	up_down	    ; its peak ie. now it is 0x00
+	call	up_down	    ; its peak ie. now it is 0x00
+	call	accumulate
 	movlw	0x02
 	cpfsgt	tri	    ; 0=up, 3=down
 	goto	sawtooth
