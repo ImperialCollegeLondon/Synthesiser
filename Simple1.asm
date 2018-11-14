@@ -182,7 +182,7 @@ Slope_Setup	    ; save all the slopes at address which is coordinate on keypad
 	
 	
 Sine_Setup	    ; save all the sine values from 0 to 2pi at consectutive addresses
-	movlb	 0x01		; set BSR to Bank 1
+	movlb	 0x2		; set BSR to Bank 1
 	movlw    0x7f
 	movwf    0x0 , BANKED
 	movlw    0x82
@@ -629,7 +629,7 @@ Sine_Setup	    ; save all the sine values from 0 to 2pi at consectutive addresse
 	movwf    0xdd , BANKED
 	movlw    0x22
 	movwf    0xde , BANKED
-	movlw    0x24
+	movlw    0xff		;change back to 0x24
 	movwf    0xdf , BANKED
 	movlw    0x27
 	movwf    0xe0 , BANKED
@@ -695,6 +695,13 @@ Sine_Setup	    ; save all the sine values from 0 to 2pi at consectutive addresse
 	movwf    0xfe , BANKED
 	movlw    0x7f
 	movwf    0xff , BANKED
+	
+;	movlb	 0x1
+;	movlw    0x24		;change back to 0x24
+;	movwf    0xdf , BANKED
+;	
+	
+	
 	movlb	 0x00		; set BSR to Bank 0
 
 	
@@ -788,10 +795,12 @@ down
 	
 	
 sine	;look up sine valuein table corresponding to the value of accum
-	movlb	0x01		; set BSR to Bank 1
+	movlb	0x2		; set BSR to Bank 1
 	movff	accum, FSR2L
-	clrf	FSR2H		;CANT REMEMBER WHY WE DID THIS	
-	movf    INDF2, W	;Read contents of address in FSR2 not changing it
+	nop
+	clrf	FSR2H		; make sure high byte is zero
+	movf    INDF2, 0, 1 ;Read contents of address in FSR2 not changing it
+	nop
 	movlb	0x00		; set BSR to Bank 0
 	return
 	
