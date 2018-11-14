@@ -129,7 +129,10 @@ accumulate
 	movf	slope, W
 	addwf	accum, F	 ; adds slope to the accumulator, if it becomes
 	movlw	0xfe		 ; greater than the 0xfe then reset accum to zero 
-	cpfsgt	accum		 
+	cpfsgt	accum
+;	movlw	0xff	    ; max value of accumulator
+;	subfwb	slope, W
+;	cpfsgt	accum
 	return
 	movlw	0x00
 	movwf	accum
@@ -274,8 +277,7 @@ sqr_zero
 	
 	
 triangle
-	movlw	0xff	    ; max value of accumulator
-	subfwb	slope
+	movf	slope
 	cpfsgt	accum	    ; make change of direction if accumulator has reached
 	call	up_down	    ; its peak ie. now it is 0x00
 	call	accumulate
@@ -283,7 +285,7 @@ triangle
 	cpfsgt	tri	    ; 0=up, 3=down
 	goto	sawtooth
 	movlw	0xff	    ; max value of accumulator
-	subfwb	accum
+	subfwb	accum, W
 	return
 up_down			    ; make decision whether to go up or down at peak
 	movlw	0x02	    ; of accumulator
