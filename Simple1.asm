@@ -5,7 +5,6 @@
 	;extern	multiply816, multiply1616, multiply824
 	
 acs0	udata_acs   ; reserve data space in access ram
-counter	    res 1   ; reserve one byte for a counter variable
 delay_count res 1   ; reserve one byte for counter in the delay routine
 accum	    res 1
 acc_max	    res 1
