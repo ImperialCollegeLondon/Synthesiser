@@ -1,7 +1,7 @@
 	#include p18f87k22.inc
 
 	extern	UART_Setup, UART_Transmit_Message   ; external UART subroutines
-	extern  ADC_Setup, ADC_Read		    ; external ADC routines
+;	extern  ADC_Setup, ADC_Read		    ; external ADC routines
 	;extern	multiply816, multiply1616, multiply824
 	
 acs0	udata_acs   ; reserve data space in access ram
@@ -24,7 +24,7 @@ main	code
 setup	bcf	EECON1, CFGS	; point to Flash program memory  
 	bsf	EECON1, EEPGD 	; access Flash program memory
 	call	UART_Setup	; setup UART
-	call	ADC_Setup	; setup ADC
+;	call	ADC_Setup	; setup ADC
 	call	SPI_MasterInit
 	call	Slope_Setup
 	call	Sine_Setup
