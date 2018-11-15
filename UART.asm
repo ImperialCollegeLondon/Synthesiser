@@ -2,9 +2,23 @@
 
     global  UART_Setup, UART_Transmit_Message
 
-acs0    udata_acs	    ; named variables in access ram
-UART_counter res 1	    ; reserve 1 byte for variable UART_counter
-
+acs0	udata_acs   ; reserve data space in access ram    
+    
+    
+counter		res 1   ; reserve one byte for a counter variable
+accum		res 1
+wav_sel		res 1
+tri		res 1   ; reserve one byte for selecting up/down for triangle wave
+output		res 1
+slope		res 1
+input		res 1
+delay_count	res 1   ; reserve one byte for counter in the delay routine
+keypadval	res 1
+UART_counter	res 1	    ; reserve 1 byte for variable UART_counter
+    
+    
+    
+    
 UART    code
     
 UART_Setup
