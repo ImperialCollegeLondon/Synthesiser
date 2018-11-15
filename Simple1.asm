@@ -27,7 +27,6 @@ main	code
 	; ******* Programme FLASH read Setup Code ***********************
 setup	bcf	EECON1, CFGS	; point to Flash program memory  
 	bsf	EECON1, EEPGD 	; access Flash program memory
-	call	UART_Setup	; setup UART
 	call	SPI_MasterInit
 	call	Slope_Setup
 	call	Sine_Setup
