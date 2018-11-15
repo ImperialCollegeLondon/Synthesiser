@@ -13,7 +13,7 @@
 	
 acs0	udata_acs   ; reserve data space in access ram
 
-; setup MIDI buffer
+; setup MIDI buffer hello
 
 		
 counter		res 1	; reserve one byte for a counter variable
