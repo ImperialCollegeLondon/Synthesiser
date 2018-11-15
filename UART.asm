@@ -40,7 +40,7 @@ UART_Loop_message
     decfsz  UART_counter
     bra	    UART_Loop_message
     return
-
+;hello
 UART_Transmit_Byte	    ; Transmits byte stored in W
     btfss   PIR1,TX1IF	    ; TX1IF is set when TXREG1 is empty
     bra	    UART_Transmit_Byte
