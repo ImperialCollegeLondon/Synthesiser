@@ -51,9 +51,6 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
-      <ICD3PlatformTool>
-        <property key="firmware.download.all" value="false"/>
-      </ICD3PlatformTool>
       <MPASMWIN-AS>
         <property key="cross.reference.file" value=""/>
         <property key="default.radix" value="HEX"/>
