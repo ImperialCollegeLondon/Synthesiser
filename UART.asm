@@ -1,21 +1,9 @@
 #include p18f87k22.inc
 
-    global  UART_Setup, UART_Transmit_Message
+    global  UART_Setup, UART_Receive_Byte
+    extern  counter, accum, wav_sel, tri, output, slope, input, delay_count, keypadval
 
-acs0	udata_acs   ; reserve data space in access ram    
-    
-    
-counter		res 1   ; reserve one byte for a counter variable
-accum		res 1
-wav_sel		res 1
-tri		res 1   ; reserve one byte for selecting up/down for triangle wave
-output		res 1
-slope		res 1
-input		res 1
-delay_count	res 1   ; reserve one byte for counter in the delay routine
-keypadval	res 1
-UART_counter	res 1	    ; reserve 1 byte for variable UART_counter
-    
+
 UART    code
         
     
@@ -40,11 +28,19 @@ UART_Setup
 ;    bra	    UART_Loop_message
 ;    return
 
-UART_Receive_Byte	    ; Transmits byte stored in W
+    
+    
+    
+    
+    
+UART_Receive_Byte  
     btfss   PIR1,RC1IF	    ; RC1IF is set when RCREG1 is full (cleared when read)
     bra	    UART_Receive_Byte
     movf    RCREG1, W
     return
+    
+    
+
 
     end
     end
