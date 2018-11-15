@@ -3,12 +3,13 @@
   <logicalFolder name="root" displayName="root" projectFiles="true">
     <logicalFolder name="f1" displayName="Source" projectFiles="true">
       <itemPath>Simple1.asm</itemPath>
-      <itemPath>UART.asm</itemPath>
       <itemPath>SPI.asm</itemPath>
       <itemPath>Sine_Table.asm</itemPath>
-      <itemPath>Slope_Table.asm</itemPath>
+      <itemPath>Keypad_read.asm</itemPath>
+      <itemPath>config.asm</itemPath>
+      <itemPath>UART.asm</itemPath>
+      <itemPath>MIDI_read.asm</itemPath>
     </logicalFolder>
-    <itemPath>Keypad_read.asm</itemPath>
   </logicalFolder>
   <sourceRootList>
     <Elem>.</Elem>
@@ -53,6 +54,9 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
+      <ICD3PlatformTool>
+        <property key="firmware.download.all" value="false"/>
+      </ICD3PlatformTool>
       <MPASMWIN-AS>
         <property key="cross.reference.file" value=""/>
         <property key="default.radix" value="HEX"/>

@@ -1,23 +1,7 @@
 #include p18f87k22.inc
 
     global  Sine_Setup
-
-    
-acs0	udata_acs   ; reserve data space in access ram    
-    
-counter		res 1   ; reserve one byte for a counter variable
-accum		res 1
-wav_sel		res 1
-tri		res 1   ; reserve one byte for selecting up/down for triangle wave
-output		res 1
-slope		res 1
-input		res 1
-delay_count	res 1   ; reserve one byte for counter in the delay routine
-keypadval	res 1
-UART_counter	res 1	    ; reserve 1 byte for variable UART_counter    
-    
-    
-    
+    extern  counter, accum, wav_sel, tri, output, slope, input, delay_count, keypadval
     
     
 Sine_Table    code
