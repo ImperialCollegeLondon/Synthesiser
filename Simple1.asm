@@ -17,7 +17,6 @@ slope		res 1	; to put the slope into
 input		res 1	; 0 then no input, 1 means input
 delay_count	res 1   ; reserve one byte for counter in the delay routine
 keypadval	res 1	; the coordinates of button pressed
-UART_counter	res 1	; reserve 1 byte for variable UART_counter
 
 	
 rst	code	0    ; reset vector
