@@ -1,24 +1,32 @@
 	#include p18f87k22.inc
 
-	extern	UART_Setup, UART_Transmit_Message   ; external UART subroutines
-	extern  Sine_Setup, Slope_Setup		    ; external look up tables
+	extern  Slope_Setup, Sine_Setup	    ; external look up tables
+	extern	MIDI_Setup
 	extern	SPI_MasterInit, SPI_MasterTransmit  ; external SPI subroutines
 	extern  keypad_read_rows		    ; external keypad read
+	extern	get_midi_slope, note_off
+	extern  UART_Setup, UART_Receive_Byte
 	extern	keypad_read_columns, get_slope	    ; subroutines
+	
+	global	counter, accum, wav_sel, tri, output, slope, input, delay_count, keypadval, output_zero, buffer
 	
 	
 acs0	udata_acs   ; reserve data space in access ram
-	
-counter		res 1   ; reserve one byte for a counter variable
-accum		res 1
-wav_sel		res 1
-tri		res 1   ; reserve one byte for selecting up/down for triangle wave
-output		res 1
-slope		res 1
-input		res 1
+
+; setup MIDI buffer
+tables		udata	0x400    ; reserve data anywhere in RAM (here at 0x400)
+buffer		res 0x80    ; reserve 128 bytes for message data
+		
+counter		res 1	; reserve one byte for a counter variable
+accum		res 1	; the accumulator byte
+wav_sel		res 1	; the byte that is used to choose waveform
+tri		res 1   ; for selecting up/down for triangle wave
+output		res 1	; a byte to put the output into
+slope		res 1	; to put the slope into
+input		res 1	; 0 then no input, 1 means input
 delay_count	res 1   ; reserve one byte for counter in the delay routine
-keypadval	res 1
-UART_counter	res 1	    ; reserve 1 byte for variable UART_counter
+keypadval	res 1	; the coordinates of button pressed
+status		res 1	; byte to save status byte for compare
 
 	
 rst	code	0    ; reset vector
@@ -28,14 +36,15 @@ main	code
 	; ******* Programme FLASH read Setup Code ***********************
 setup	bcf	EECON1, CFGS	; point to Flash program memory  
 	bsf	EECON1, EEPGD 	; access Flash program memory
-	call	UART_Setup	; setup UART
 	call	SPI_MasterInit
-	call	Slope_Setup
+	call	MIDI_Setup
 	call	Sine_Setup
+	call	UART_Setup
 	movlw	0xff
 	movwf	TRISJ		; set 4 PORTJ all inputs for 4 waveforms control
 	movlw	0x00
 	movwf	TRISH		; set PORTH output
+	movwf	counter
 	movlw	0x01
 	movwf	wav_sel		; default is sawtooth
 	goto    start
@@ -47,7 +56,7 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	; PORTC used for UART recieve
 
 
-inter   code	0x0008	; high vector, no low vector
+inter   code	0x0008		; high vector, no low vector
 	btfss	PIR4,CCP4IF	; check that this is timer0 interrupt
 	retfie	1		; if not then return
 	call	transmit
@@ -64,7 +73,7 @@ timer
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x05		; set period compare registers
+	movlw	0x04		; set period compare registers
 	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
 	movlw	0x0c
 	movwf	CCPR4L
@@ -73,10 +82,33 @@ timer
 	bsf	INTCON,GIE	; Enable all interrupts
 
 
-main_loop
+receive_loop
 	banksel PADCFG1		; PADCFG1 is not in Access Bank!!
-	bsf	PADCFG1, REPU, BANKED	; PortE pull-ups on 
-	movlb	0x00		; set BSR back to Bank 0
+	movlb	0x00
+	; call either receive midi or receive keypad
+	call	receive_midi	; receives the midi signal and sets the appropriate slope
+	
+	goto	receive_loop
+
+
+receive_midi		; receives the midi signal and sets the appropriate slope or outputs zero
+	lfsr	FSR1, buffer
+	call	UART_Receive_Byte	; waits for status byte
+	movwf	status
+	movlw	0x8f
+	cpfsgt	status
+	goto	note_off
+	call	UART_Receive_Byte	; receive note byte
+	movwf	INDF1	
+	call	UART_Receive_Byte ;clear velocity byte
+	call	get_midi_slope
+	movlw	0x01
+	movwf	input		; set the input as 0x01, meaning there is an input
+	return
+	
+	
+receive_keypad	    ; receives a button press and sets the appropriate slope or outputs zero
+	bsf	PADCFG1, REPU, BANKED	; PortE pull-ups on
 	clrf	LATE
 	
 	call	keypad_read_rows
@@ -94,20 +126,19 @@ main_loop
 	movlw	0x01
 	movwf	input		; set the input as 0x01, meaning there is an input
 	call	get_slope	; gets slope corresponding to button. puts in W
-
-	goto	main_loop
-
+	return
+	
 transmit
 	movlw	0x01
 	cpfslt	input		; check if there is an input
-	call	get_output	    ; hopefully this delay isnt a problem
+	call	get_output	; hopefully this delay isnt a problem
 	movlw	0x00
-	movwf	PORTH		    ; set CS low
-	movlw	0x50		    ;SEND ZERO FOR UPPER NIBBLE OF DATA TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
-	call	SPI_MasterTransmit;takes data in through W
+	movwf	PORTH		; set CS low
+	movlw	0x50		;SEND ZERO FOR UPPER NIBBLE OF DATA TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
+	call	SPI_MasterTransmit  ;takes data in through W
 	movf	output, W
-	call	SPI_MasterTransmit;takes data in through W
-	movlw	0x01		    ; set CS high
+	call	SPI_MasterTransmit  ;takes data in through W
+	movlw	0x01		 ; set CS high
 	movwf	PORTH
 	return
 	
@@ -126,7 +157,7 @@ output_zero
 	movlw	0x00
 	movwf	input		; set input to 0x00 meaning, there is no input
 	movwf	output
-	goto	main_loop
+	goto	receive_loop
 	
 accumulate 
 	movf	slope, W
@@ -213,9 +244,5 @@ sine	;look up sine valuein table corresponding to the value of accum
 	return
 	
 		
-
-	
 	end
-	
-	
 	
