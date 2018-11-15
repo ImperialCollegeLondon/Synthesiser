@@ -1,7 +1,7 @@
 	#include p18f87k22.inc
 
 	extern	UART_Setup, UART_Transmit_Message   ; external UART subroutines
-	extern  Sine_Setup, Slope_Setup		    ; external look up tables
+	extern  Slope_Setup, Sine_Setup	    ; external look up tables
 	extern	SPI_MasterInit, SPI_MasterTransmit  ; external SPI subroutines
 	extern  keypad_read_rows		    ; external keypad read
 	extern	keypad_read_columns, get_slope	    ; subroutines
@@ -9,16 +9,16 @@
 	
 acs0	udata_acs   ; reserve data space in access ram
 	
-counter		res 1   ; reserve one byte for a counter variable
-accum		res 1
-wav_sel		res 1
-tri		res 1   ; reserve one byte for selecting up/down for triangle wave
-output		res 1
-slope		res 1
-input		res 1
+counter		res 1	; reserve one byte for a counter variable
+accum		res 1	; the accumulator byte
+wav_sel		res 1	; the byte that is used to choose waveform
+tri		res 1   ; for selecting up/down for triangle wave
+output		res 1	; a byte to put the output into
+slope		res 1	; to put the slope into
+input		res 1	; 0 then no input, 1 means input
 delay_count	res 1   ; reserve one byte for counter in the delay routine
-keypadval	res 1
-UART_counter	res 1	    ; reserve 1 byte for variable UART_counter
+keypadval	res 1	; the coordinates of button pressed
+UART_counter	res 1	; reserve 1 byte for variable UART_counter
 
 	
 rst	code	0    ; reset vector
@@ -47,7 +47,7 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	; PORTC used for UART recieve
 
 
-inter   code	0x0008	; high vector, no low vector
+inter   code	0x0008		; high vector, no low vector
 	btfss	PIR4,CCP4IF	; check that this is timer0 interrupt
 	retfie	1		; if not then return
 	call	transmit
@@ -100,14 +100,14 @@ main_loop
 transmit
 	movlw	0x01
 	cpfslt	input		; check if there is an input
-	call	get_output	    ; hopefully this delay isnt a problem
+	call	get_output	; hopefully this delay isnt a problem
 	movlw	0x00
-	movwf	PORTH		    ; set CS low
-	movlw	0x50		    ;SEND ZERO FOR UPPER NIBBLE OF DATA TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
-	call	SPI_MasterTransmit;takes data in through W
+	movwf	PORTH		; set CS low
+	movlw	0x50		;SEND ZERO FOR UPPER NIBBLE OF DATA TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
+	call	SPI_MasterTransmit  ;takes data in through W
 	movf	output, W
-	call	SPI_MasterTransmit;takes data in through W
-	movlw	0x01		    ; set CS high
+	call	SPI_MasterTransmit  ;takes data in through W
+	movlw	0x01		 ; set CS high
 	movwf	PORTH
 	return
 	
@@ -213,9 +213,6 @@ sine	;look up sine valuein table corresponding to the value of accum
 	return
 	
 		
-
-	
 	end
-	
 	
 	
