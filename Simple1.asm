@@ -799,7 +799,7 @@ sine	;look up sine valuein table corresponding to the value of accum
 	movff	accum, FSR2L
 	nop
 	clrf	FSR2H		; make sure high byte is zero
-	movf    INDF2, 0, 1 ;Read contents of address in FSR2 not changing it
+	movf    INDF2, 0, 1	;Read contents of address in FSR2 not changing it
 	nop
 	movlb	0x00		; set BSR to Bank 0
 	return
