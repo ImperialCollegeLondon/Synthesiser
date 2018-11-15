@@ -1,6 +1,5 @@
 	#include p18f87k22.inc
 
-	extern	UART_Setup, UART_Transmit_Message   ; external UART subroutines
 	extern  Slope_Setup, Sine_Setup	    ; external look up tables
 	extern	SPI_MasterInit, SPI_MasterTransmit  ; external SPI subroutines
 	extern  keypad_read_rows		    ; external keypad read
