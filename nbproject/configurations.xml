@@ -6,6 +6,7 @@
       <itemPath>SPI.asm</itemPath>
       <itemPath>Sine_Table.asm</itemPath>
       <itemPath>Keypad_read.asm</itemPath>
+      <itemPath>config.asm</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>

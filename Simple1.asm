@@ -4,7 +4,7 @@
 	extern	SPI_MasterInit, SPI_MasterTransmit  ; external SPI subroutines
 	extern  keypad_read_rows		    ; external keypad read
 	extern	keypad_read_columns, get_slope	    ; subroutines
-	
+	global	counter, accum, wav_sel, tri, output, slope, input, delay_count, keypadval
 	
 acs0	udata_acs   ; reserve data space in access ram
 	
@@ -61,7 +61,7 @@ timer
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x05		; set period compare registers
+	movlw	0x04		; set period compare registers
 	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
 	movlw	0x0c
 	movwf	CCPR4L
