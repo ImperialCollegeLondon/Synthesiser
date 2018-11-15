@@ -14,8 +14,7 @@
 acs0	udata_acs   ; reserve data space in access ram
 
 ; setup MIDI buffer
-tables		udata	0x400    ; reserve data anywhere in RAM (here at 0x400)
-buffer		res 0x80    ; reserve 128 bytes for message data
+
 		
 counter		res 1	; reserve one byte for a counter variable
 accum		res 1	; the accumulator byte
@@ -27,7 +26,11 @@ input		res 1	; 0 then no input, 1 means input
 delay_count	res 1   ; reserve one byte for counter in the delay routine
 keypadval	res 1	; the coordinates of button pressed
 status		res 1	; byte to save status byte for compare
-
+		
+		
+		
+tables		udata	0x400    ; reserve data anywhere in RAM (here at 0x400)
+buffer		res 0x80    ; reserve 128 bytes for message data
 	
 rst	code	0    ; reset vector
 	goto	setup
@@ -86,6 +89,9 @@ receive_loop
 	banksel PADCFG1		; PADCFG1 is not in Access Bank!!
 	movlb	0x00
 	; call either receive midi or receive keypad
+	movlw	0x00
+	
+	movwf	output
 	call	receive_midi	; receives the midi signal and sets the appropriate slope
 	
 	goto	receive_loop
@@ -130,6 +136,9 @@ receive_keypad	    ; receives a button press and sets the appropriate slope or o
 	
 transmit
 	movlw	0x01
+	cpfslt	PORTJ, ACCESS	; want to stay at current waveform	
+	movff	PORTJ, wav_sel	; save wav_sel
+	movlw	0x01
 	cpfslt	input		; check if there is an input
 	call	get_output	; hopefully this delay isnt a problem
 	movlw	0x00
@@ -151,9 +160,6 @@ get_output
 	
 	
 output_zero
-	movlw	0x01
-	cpfslt	PORTJ, ACCESS	; want to stay at current waveform	
-	movff	PORTJ, wav_sel	; save wav_sel
 	movlw	0x00
 	movwf	input		; set input to 0x00 meaning, there is no input
 	movwf	output
@@ -174,9 +180,6 @@ accumulate
 
 
 waveform_select
-	movlw	0x01
-	cpfslt	PORTJ, ACCESS	; want to stay at current waveform	
-	movff	PORTJ, wav_sel	; save to prevent problems if released in loop
 	movlw	0x01
 	cpfsgt	wav_sel, ACCESS
 	goto	sawtooth	; make sure these return
