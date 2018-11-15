@@ -1,14 +1,12 @@
 	#include p18f87k22.inc
 
-	extern  Slope_Setup, Sine_Setup	    ; external look up tables
+	extern  Sine_Setup			    ; external look up tables
 	extern	MIDI_Setup
 	extern	SPI_MasterInit, SPI_MasterTransmit  ; external SPI subroutines
-	extern  keypad_read_rows		    ; external keypad read
 	extern	get_midi_slope, note_off
 	extern  UART_Setup, UART_Receive_Byte
-	extern	keypad_read_columns, get_slope	    ; subroutines
 	
-	global	counter, accum, wav_sel, tri, output, slope, input, delay_count, keypadval, output_zero, buffer
+	global	counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input, delay_count, output_zero, buffer
 	
 	
 acs0	udata_acs   ; reserve data space in access ram
@@ -17,14 +15,15 @@ acs0	udata_acs   ; reserve data space in access ram
 
 		
 counter		res 1	; reserve one byte for a counter variable
-accum		res 1	; the accumulator byte
+accumH		res 1	; the accumulator high byte	
+accumL		res 1	; the accumulator  low byte		
 wav_sel		res 1	; the byte that is used to choose waveform
 tri		res 1   ; for selecting up/down for triangle wave
 output		res 1	; a byte to put the output into
-slope		res 1	; to put the slope into
+slopeH		res 1	; to put the slope into high
+slopeL		res 1	; slope low byte
 input		res 1	; 0 then no input, 1 means input
 delay_count	res 1   ; reserve one byte for counter in the delay routine
-keypadval	res 1	; the coordinates of button pressed
 status		res 1	; byte to save status byte for compare
 		
 		
@@ -51,14 +50,18 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movlw	0x01
 	movwf	wav_sel		; default is sawtooth
 	goto    start
-	; ******* Main programme ****************************************
+	; ********PORT USES********
 	; PORTJ for waveform control
 	; PORTE for keypad inputs
 	; PORTD sends SPI
 	; PORTH used for chip select
 	; PORTC used for UART recieve
+	;********BANK USES********
+	; BANK 1 for slopeH
+	; BANK 2 for sine
+	; BANK 3 for slopeL
 
-
+; ******* Main programme ****************************************
 inter   code	0x0008		; high vector, no low vector
 	btfss	PIR4,CCP4IF	; check that this is timer0 interrupt
 	retfie	1		; if not then return
@@ -113,27 +116,6 @@ receive_midi		; receives the midi signal and sets the appropriate slope or outpu
 	return
 	
 	
-receive_keypad	    ; receives a button press and sets the appropriate slope or outputs zero
-	bsf	PADCFG1, REPU, BANKED	; PortE pull-ups on
-	clrf	LATE
-	
-	call	keypad_read_rows
-	nop
-	nop
-	movlw	0x0f
-	cpfslt	keypadval
-	goto	output_zero	; output zero as no button is pressed
-				
-	call	keypad_read_columns
-	movlw	0xEF		
-	cpfslt	keypadval	; output zero as button has been released
-	goto	output_zero	
-	
-	movlw	0x01
-	movwf	input		; set the input as 0x01, meaning there is an input
-	call	get_slope	; gets slope corresponding to button. puts in W
-	return
-	
 transmit
 	movlw	0x01
 	cpfslt	PORTJ, ACCESS	; want to stay at current waveform	
@@ -166,16 +148,10 @@ output_zero
 	goto	receive_loop
 	
 accumulate 
-	movf	slope, W
-	addwf	accum, F	 ; adds slope to the accumulator, if it becomes
-	movlw	0xfe		 ; greater than the 0xfe then reset accum to zero 
-	cpfsgt	accum
-;	movlw	0xff	    ; max value of accumulator
-;	subfwb	slope, W
-;	cpfsgt	accum
-	return
-	movlw	0x00
-	movwf	accum
+	movf	slopeL, W
+	addwf	accumL, F	 ; adds slope to the accumulator
+	movf	slopeH, W
+	addwfc	accumH, F
 	return
 
 
@@ -197,13 +173,13 @@ waveform_select
 	
 	
 sawtooth
-	movf accum, W
+	movf accumH, W
 	return 
 
 	
 square	;conditions for the square wave value based on accum
 	movlw	0x80	    ; midpoint of accumulator
-	cpfsgt	accum
+	cpfsgt	accumH
 	goto	sqr_zero 
 	movlw	0xff	    ; square wave max amplitude
 	return
@@ -213,15 +189,15 @@ sqr_zero
 	
 	
 triangle
-	movf	slope
-	cpfsgt	accum	    ; make change of direction if accumulator has reached
+	movf	slopeH
+	cpfsgt	accumH	    ; make change of direction if accumulator has reached
 	call	up_down	    ; its peak ie. now it is 0x00
 	call	accumulate
 	movlw	0x02
 	cpfsgt	tri	    ; 0=up, 3=down
 	goto	sawtooth
 	movlw	0xff	    ; max value of accumulator
-	subfwb	accum, W
+	subfwb	accumH, W
 	return
 up_down			    ; make decision whether to go up or down at peak
 	movlw	0x02	    ; of accumulator
@@ -240,7 +216,7 @@ down
 sine	;look up sine valuein table corresponding to the value of accum
 	movlw	0x02		; set BSR to Bank 1
 	movwf	FSR2H
-	movff	accum, FSR2L
+	movff	accumH, FSR2L
 	nop
 	movf    INDF2, W	;Read contents of address in FSR2 not changing it
 	nop
