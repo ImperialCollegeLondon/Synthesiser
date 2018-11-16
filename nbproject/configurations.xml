@@ -22,7 +22,7 @@
         <targetDevice>PIC18F87K22</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>Simulator</platformTool>
+        <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>MPASMWIN</languageToolchain>
         <languageToolchainVersion>5.81</languageToolchainVersion>
         <platform>3</platform>
@@ -72,9 +72,6 @@
         <property key="hex-output-format" value="INHX32"/>
         <property key="map-file" value="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"/>
       </MPASMWIN-LD>
-      <Simulator>
-        <property key="periphADC1.minTacq" value="5"/>
-      </Simulator>
       <mpasmsuite>
         <property key="absolute-mode" value="false"/>
         <property key="eeprom-width" value="8"/>
