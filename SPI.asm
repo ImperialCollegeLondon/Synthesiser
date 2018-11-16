@@ -1,7 +1,7 @@
 #include p18f87k22.inc
 
     global  SPI_MasterInit, SPI_MasterTransmit
-    extern  counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input, delay_count
+    extern  counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input, delay_count, accum
     
 
     
