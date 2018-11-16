@@ -1,7 +1,7 @@
 #include p18f87k22.inc
 
-    global  MIDI_Setup, get_midi_slope, note_off
-    extern  counter, slopeH, slopeL, buffer, UART_Receive_Byte, output_zero;, accum, slope
+    global  MIDI_Setup, get_midi_slope, receive_midi
+    extern  counter, slopeH, slopeL, buffer, UART_Receive_Byte, status, input, output
     
 
 MIDI	code
@@ -20,21 +20,38 @@ get_midi_slope;_16
 	; reseting FSR1 when it gets to end of buffer, not workin?
 	movlw	0x01
 	addwf	counter
-	movlw	0x80
-	cpfsgt	counter
+;	movlw	0x80
+;	cpfsgt	counter
+;	return
+;	lfsr	FSR1, buffer
+;	movlw	0x00
+;	movwf	counter
 	return
-	lfsr	FSR1, buffer
-	movlw	0x00
-	movwf	counter
-	return
-		
 	
+		
+receive_midi		; receives the midi signal and sets the appropriate slope or outputs zero
+	lfsr	FSR1, buffer
+	call	UART_Receive_Byte	; waits for status byte
+	movwf	status
+	movlw	0x8f
+	cpfsgt	status
+	goto	note_off
+	call	UART_Receive_Byte	; receive note byte
+	movwf	INDF1	
+	call	UART_Receive_Byte   ;clear velocity byte flag
+	call	get_midi_slope
+	movlw	0x01
+	movwf	input		; set the input as 0x01, meaning there is an input
+	return
 note_off
 	; clear 2 bytes flags
 	call	UART_Receive_Byte
 	call	UART_Receive_Byte
-	goto	output_zero
-		
+	movlw	0x00
+	movwf	input		; set input to 0x00 meaning, there is no input
+	movwf	output
+	return
+	
 	
 MIDI_Setup;_16	    ; save all the slopes at address which is coordinate on keypad
 	movlb	 0x01

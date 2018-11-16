@@ -3,18 +3,16 @@
 	extern  Sine_Setup			    ; external look up tables
 	extern	MIDI_Setup
 	extern	SPI_MasterInit, SPI_MasterTransmit  ; external SPI subroutines
-	extern	get_midi_slope, note_off
+	extern	get_midi_slope, receive_midi
 	extern  UART_Setup, UART_Receive_Byte
 	extern  get_output, accumulate, waveform_select, sawtooth, square
 	extern  sqr_zero, triangle, sine
 	
 	global	counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL
-	global	input, delay_count, output_zero, buffer
+	global	input, delay_count, buffer, output, status
 	
 	
 acs0	udata_acs   ; reserve data space in access ram
-
-; setup MIDI buffer hello
 
 		
 counter		res 1	; reserve one byte for a counter variable
@@ -28,8 +26,6 @@ slopeL		res 1	; slope low byte
 input		res 1	; 0 then no input, 1 means input
 delay_count	res 1   ; reserve one byte for counter in the delay routine
 status		res 1	; byte to save status byte for compare
-		
-		
 		
 tables		udata	0x400    ; reserve data anywhere in RAM (here at 0x400)
 buffer		res 0x80    ; reserve 128 bytes for message data
@@ -51,7 +47,6 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movwf	TRISH		; set PORTH output
 	movwf	input
 	movwf	output
-	movwf	counter
 	movlw	0x01
 	movwf	wav_sel		; default is sawtooth
 	goto    start
@@ -77,16 +72,16 @@ inter   code	0x0008		; high vector, no low vector
 start	nop
 	
 timer	
-	movlw	b'00000001'	; Set timer1 to 16-bit, Fosc/4
+	movlw	b'00000001'	; Set timer1 to 16-MHz, Fosc/4
 	movwf	T1CON		; = 2MHz clock rate
 	banksel CCPTMRS1	; not in access bank!
 	bcf	CCPTMRS1,C4TSEL1    ; Choose Timer1
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x05		; set period compare registers
+	movlw	0x06		; set period compare registers
 	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
-	movlw	0x0c
+	movlw	0x3F
 	movwf	CCPR4L
 	bsf	PIE4,CCP4IE	; Enable CCP4 interrupt
 	bsf	INTCON,PEIE	; Enable peripheral interrupts
@@ -96,28 +91,10 @@ timer
 receive_loop
 	banksel PADCFG1		; PADCFG1 is not in Access Bank!!
 	movlb	0x00
-	; call either receive midi or receive keypad
-	
 	call	receive_midi	; receives the midi signal and sets the appropriate slope
-	
 	goto	receive_loop
 
 
-receive_midi		; receives the midi signal and sets the appropriate slope or outputs zero
-	lfsr	FSR1, buffer
-	call	UART_Receive_Byte	; waits for status byte
-	movwf	status
-	movlw	0x8f
-	cpfsgt	status
-	goto	note_off
-	call	UART_Receive_Byte	; receive note byte
-	movwf	INDF1	
-	call	UART_Receive_Byte   ;clear velocity byte flag
-	call	get_midi_slope
-	movlw	0x01
-	movwf	input		; set the input as 0x01, meaning there is an input
-	return
-	
 	
 transmit
 	movlw	0x01
@@ -137,11 +114,6 @@ transmit
 	return
 	
 	
-output_zero
-	movlw	0x00
-	movwf	input		; set input to 0x00 meaning, there is no input
-	movwf	output
-	goto	receive_loop
 	
 
 		

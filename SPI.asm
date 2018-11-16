@@ -1,7 +1,6 @@
 #include p18f87k22.inc
 
     global  SPI_MasterInit, SPI_MasterTransmit
-    extern  counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input, delay_count, accum
     
 
     
@@ -19,19 +18,13 @@ SPI_MasterInit	; Set Clock edge to positive
 
 SPI_MasterTransmit  ; Start transmission of data (held in W)
 	movwf 	SSP2BUF
-	call    delay; DO NOT SEEM TO SET DELAY!!!!!
 Wait_Transmit	; Wait for transmission to complete 
 	btfss 	PIR2, SSP2IF
 	bra 	Wait_Transmit
 	bcf 	PIR2, SSP2IF	; clear interrupt flag
 	return
 	
-	
 
-; a delay subroutine if you need one, times around loop in delay_count
-delay	decfsz	delay_count	; decrement until zero	
-	bra delay
-	return
 
 	
 	
