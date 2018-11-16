@@ -48,8 +48,6 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movwf	TRISJ		; set 4 PORTJ all inputs for 4 waveforms control
 	movlw	0x00
 	movwf	TRISH		; set PORTH output
-	movwf	TRISF
-	movwf	PORTF
 	movwf	input
 	movwf	output
 	movwf	counter
@@ -107,7 +105,6 @@ receive_loop
 receive_midi		; receives the midi signal and sets the appropriate slope or outputs zero
 	lfsr	FSR1, buffer
 	call	UART_Receive_Byte	; waits for status byte
-	movwf	PORTF
 	movwf	status
 	movlw	0x8f
 	cpfsgt	status

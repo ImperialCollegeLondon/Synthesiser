@@ -1,7 +1,7 @@
 #include p18f87k22.inc
 
     global  MIDI_Setup, get_midi_slope, note_off
-    extern  counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input, delay_count,UART_Receive_Byte, output_zero, UART_Receive_Byte, buffer, accum, slope
+    extern  counter, slopeH, slopeL, buffer, UART_Receive_Byte, output_zero;, accum, slope
     
 
 MIDI	code
@@ -13,7 +13,7 @@ get_midi_slope;_16
 	movwf	FSR2H		; slopeH's stored in bank 1
 	movf    INDF2, W	;Read contents of address in FSR2 not changing it
 	movwf	slopeH
-	movlw	0x03
+	movlw	0x04
 	movwf	FSR2H		; slopeL's stored in bank 3
 	movf    INDF2, W	;Read contents of address in FSR2 not changing it
 	movwf	slopeL
@@ -160,7 +160,7 @@ note_off
 ;
 ;	
 ;	
-  
+;  
 MIDI_Setup;_16	    ; save all the slopes at address which is coordinate on keypad
 	movlb	 0x01
 	movlb    0x01    ; slope high bytes stored in bank 1
@@ -265,7 +265,7 @@ MIDI_Setup;_16	    ; save all the slopes at address which is coordinate on keypa
 
 
 
-	movlb    0x03    ; slope low bytes stored in bank 3
+	movlb    0x04    ; slope low bytes stored in bank 3
 	movlw    0xaa
 	movwf    0x24 ,BANKED
 	movlw    0xc3
