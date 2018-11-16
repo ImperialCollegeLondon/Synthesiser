@@ -46,6 +46,7 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movwf	TRISJ		; set 4 PORTJ all inputs for 4 waveforms control
 	movlw	0x00
 	movwf	TRISH		; set PORTH output
+	movwf	input
 	movwf	counter
 	movlw	0x01
 	movwf	wav_sel		; default is sawtooth
@@ -79,7 +80,7 @@ timer
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x04		; set period compare registers
+	movlw	0x06	; set period compare registers
 	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
 	movlw	0x0c
 	movwf	CCPR4L
@@ -93,8 +94,7 @@ receive_loop
 	movlb	0x00
 	; call either receive midi or receive keypad
 	movlw	0x00
-	
-	movwf	output
+	;movwf	output
 	call	receive_midi	; receives the midi signal and sets the appropriate slope
 	
 	goto	receive_loop

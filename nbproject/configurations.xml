@@ -5,7 +5,6 @@
       <itemPath>Simple1.asm</itemPath>
       <itemPath>config.asm</itemPath>
       <itemPath>UART.asm</itemPath>
-      <itemPath>Keypad_read.asm</itemPath>
       <itemPath>MIDI_read.asm</itemPath>
       <itemPath>Makefile</itemPath>
       <itemPath>SPI.asm</itemPath>
