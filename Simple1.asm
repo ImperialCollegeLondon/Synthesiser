@@ -5,8 +5,11 @@
 	extern	SPI_MasterInit, SPI_MasterTransmit  ; external SPI subroutines
 	extern	get_midi_slope, note_off
 	extern  UART_Setup, UART_Receive_Byte
+	extern  get_output, accumulate, waveform_select, sawtooth, square
+	extern  sqr_zero, triangle, sine
 	
-	global	counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input, delay_count, output_zero, buffer, slope, accum
+	global	counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL
+	global	input, delay_count, output_zero, buffer
 	
 	
 acs0	udata_acs   ; reserve data space in access ram
@@ -25,8 +28,6 @@ slopeL		res 1	; slope low byte
 input		res 1	; 0 then no input, 1 means input
 delay_count	res 1   ; reserve one byte for counter in the delay routine
 status		res 1	; byte to save status byte for compare
-accum		res 1
-slope		res 1
 		
 		
 		
@@ -135,13 +136,6 @@ transmit
 	movwf	PORTH
 	return
 	
-get_output
-	call	accumulate	; adds slope to the accumulator, if it becomes
-				; greater than the max_acc then reset accum to zero
-	call	waveform_select	; selects waveform and makes W value to output
-	movwf	output
-	return
-	
 	
 output_zero
 	movlw	0x00
@@ -149,143 +143,7 @@ output_zero
 	movwf	output
 	goto	receive_loop
 	
-accumulate;_16 
-	movf	slopeL, W
-	addwfc	accumL, F	 ; adds slope to the accumulator
-	movf	slopeH, W
-	addwfc	accumH, F
-	return
 
-;accumulate 
-;	movf	slope, W
-;	addwf	accum, F	 ; adds slope to the accumulator, if it becomes
-;	movlw	0xfe		 ; greater than the 0xfe then reset accum to zero 
-;	cpfsgt	accum
-;;	movlw	0xff	    ; max value of accumulator
-;;	subfwb	slope, W
-;;	cpfsgt	accum
-;	return
-;	movlw	0x00
-;	movwf	accum
-;	return
-
-waveform_select
-	movlw	0x01
-	cpfsgt	wav_sel, ACCESS
-	goto	sawtooth	; make sure these return
-	movlw	0x02
-	cpfsgt	wav_sel, ACCESS 
-	goto	square		; make sure these return
-	movlw	0x04
-	cpfsgt	wav_sel, ACCESS 
-	goto	triangle	; make sure these return
-	movlw	0x08
-	cpfsgt	wav_sel, ACCESS 
-	goto	sine		; make sure these return
-	goto	sawtooth
-	return
-	
-;sawtooth
-;	movf accum, W
-;	return 
-;
-;	
-;square	;conditions for the square wave value based on accum
-;	movlw	0x80	    ; midpoint of accumulator
-;	cpfsgt	accum
-;	goto	sqr_zero 
-;	movlw	0xff	    ; square wave max amplitude
-;	return
-;sqr_zero
-;	movlw	0x00
-;	return
-;	
-;	
-;triangle
-;	movf	slope
-;	cpfsgt	accum	    ; make change of direction if accumulator has reached
-;	call	up_down	    ; its peak ie. now it is 0x00
-;	call	accumulate
-;	movlw	0x02
-;	cpfsgt	tri	    ; 0=up, 3=down
-;	goto	sawtooth
-;	movlw	0xff	    ; max value of accumulator
-;	subfwb	accum, W
-;	return
-;up_down			    ; make decision whether to go up or down at peak
-;	movlw	0x02	    ; of accumulator
-;	cpfsgt	tri	    ; tri = 0x00 went up now go down
-;	goto	up	    ; tri = 0x03 went down now go up
-;	goto	down
-;up
-;	movlw	0x03	    ; now go down
-;	movwf	tri
-;	return
-;down
-;	movlw	0x00	    ; now go up
-;	movwf	tri
-;	return	
-;	
-;sine	;look up sine valuein table corresponding to the value of accum
-;	movlw	0x02		; set BSR to Bank 1
-;	movwf	FSR2H
-;	movff	accum, FSR2L
-;	nop
-;	movf    INDF2, W	;Read contents of address in FSR2 not changing it
-;	nop
-;	return
-;		
-
-sawtooth;_16
-	movf accumH, W
-	return 
-
-	
-square;_16	;conditions for the square wave value based on accum
-	movlw	0x80	    ; midpoint of accumulator
-	cpfsgt	accumH
-	goto	sqr_zero 
-	movlw	0xff	    ; square wave max amplitude
-	return
-sqr_zero;_16
-	movlw	0x00
-	return
-	
-	
-triangle;_16
-	movf	slopeH
-	cpfsgt	accumH	    ; make change of direction if accumulator has reached
-	call	up_down	    ; its peak ie. now it is 0x00
-	call	accumulate
-	movlw	0x02
-	cpfsgt	tri	    ; 0=up, 3=down
-	goto	sawtooth
-	movlw	0xff	    ; max value of accumulator
-	subfwb	accumH, W
-	return
-up_down;_16		    ; make decision whether to go up or down at peak
-	movlw	0x02	    ; of accumulator
-	cpfsgt	tri	    ; tri = 0x00 went up now go down
-	goto	up	    ; tri = 0x03 went down now go up
-	goto	down
-up;_16
-	movlw	0x03	    ; now go down
-	movwf	tri
-	return
-down;_16
-	movlw	0x00	    ; now go up
-	movwf	tri
-	return	
-	
-sine;_16	;look up sine valuein table corresponding to the value of accum
-	movlw	0x02		; set BSR to Bank 1
-	movwf	FSR2H
-	movff	accumH, FSR2L
-	nop
-	movf    INDF2, W	;Read contents of address in FSR2 not changing it
-	nop
-	return
-	
 		
 	end
 	

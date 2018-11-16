@@ -19,16 +19,7 @@ UART_Setup
     bsf	    RCSTA1, CREN    ; continuous receive enable
     return
 
-;UART_Receive_Message	    ; Message stored at FSR2, length stored in W
-;    movwf   UART_counter
-;UART_Loop_message
-;    call    UART_Receive_Byte
-;    movwf   POSTINC2
-;    decfsz  UART_counter
-;    bra	    UART_Loop_message
-;    return
 
-    
     
 UART_Receive_Byte  
     btfss   PIR1,RC1IF	    ; RC1IF is set when RCREG1 is full (cleared when read)
