@@ -8,14 +8,13 @@
 	extern  sawtooth, square, waveform_select; 'Accumulate_generator' routines
 	extern  sqr_zero, triangle, sine	 ; 'Accumulate_generator' routines
 	
-	global	counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL
+	global	accumH, accumL, wav_sel, tri, output, slopeH, slopeL
 	global	input, delay_count, note, output, status
 	
 	
 acs0	udata_acs   ; reserve data space in access ram
 
 		
-counter		res 1	; reserve one byte for a counter variable
 accumH		res 1	; the accumulator high byte	
 accumL		res 1	; the accumulator  low byte		
 wav_sel		res 1	; the byte that is used to choose waveform
@@ -24,7 +23,6 @@ output		res 1	; a byte to put the output into
 slopeH		res 1	; to put the slope into high
 slopeL		res 1	; slope low byte
 input		res 1	; 0 then no input, 1 means input
-delay_count	res 1   ; reserve one byte for counter in the delay routine
 status		res 1	; byte to save status byte for compare
 note		res 1	; one byte for note
 	
@@ -63,7 +61,7 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 inter   code	0x0008		; high vector, no low vector
 	btfss	PIR4,CCP4IF	; check that this is timer0 interrupt
 	retfie	1		; if not then return
-	call	transmit
+	call	transmit	; generate output and then transmit
 	bcf	PIR4,CCP4IF	; clear interrupt flag
 	retfie  1		; fast return from interrupt
 	
