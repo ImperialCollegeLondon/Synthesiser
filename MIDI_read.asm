@@ -1,11 +1,37 @@
 #include p18f87k22.inc
 
     global  MIDI_Setup, get_midi_slope, receive_midi
-    extern  counter, slopeH, slopeL, note, UART_Receive_Byte, status, input, output
+    extern  counter, slopeH, slopeL, note, UART_Receive_Byte, status, input
+    extern  output
     
 
 MIDI	code
 
+		
+receive_midi ; receives the midi and sets the appropriate slope or outputs zero
+	;lfsr	FSR1, note		; put address to save note into FRS1
+	call	UART_Receive_Byte	; waits for status byte
+	movwf	status			; saves status byte
+	movlw	0x8f
+	cpfsgt	status			; checks if status is on or off
+	goto	note_off		
+	call	UART_Receive_Byte	; receive the note byte
+;	movwf	INDF1			
+	movwf	note			; put it into note 
+	call	UART_Receive_Byte	; clear velocity byte flag
+	call	get_midi_slope		; get the slopeL/H stored at MIDI note no.
+	movlw	0x01
+	movwf	input			; set the input as 0x01, meaning there is an input
+	return
+note_off
+	; clear 2 bytes flags
+	call	UART_Receive_Byte
+	call	UART_Receive_Byte
+	movlw	0x00
+	movwf	input		; set input to 0x00 meaning, there is no input
+	movwf	output
+	return
+	
 get_midi_slope;_16
 ;	movf	INDF1, W	; move address (MIDI note no.) of slopeH and..
 ;	movwf   FSR2L		; ..slopeL into FSR2L
@@ -19,32 +45,6 @@ get_midi_slope;_16
 	movf    INDF2, W	;Read contents of address in FSR2 not changing it
 	movwf	slopeL
 	return
-	
-		
-receive_midi		; receives the midi signal and sets the appropriate slope or outputs zero
-	;lfsr	FSR1, note		; put address to save note into FRS1
-	call	UART_Receive_Byte	; waits for status byte
-	movwf	status			; saves status byte
-	movlw	0x8f
-	cpfsgt	status			; checks if status is on or off
-	goto	note_off		
-	call	UART_Receive_Byte	; receive the note byte
-;	movwf	INDF1			
-	movwf	note			; put it into note 
-	call	UART_Receive_Byte   ;clear velocity byte flag
-	call	get_midi_slope
-	movlw	0x01
-	movwf	input		; set the input as 0x01, meaning there is an input
-	return
-note_off
-	; clear 2 bytes flags
-	call	UART_Receive_Byte
-	call	UART_Receive_Byte
-	movlw	0x00
-	movwf	input		; set input to 0x00 meaning, there is no input
-	movwf	output
-	return
-	
 	
 MIDI_Setup;_16	    ; save all the slopes at address which is coordinate on keypad
 	movlb	 0x01

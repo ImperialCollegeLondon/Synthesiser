@@ -1,13 +1,14 @@
 #include p18f87k22.inc
 
     global  Sine_Setup
-    extern  counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input, delay_count
+    extern  counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input
+    extern  delay_count
     
-    
+   
 Sine_Table    code
     
-Sine_Setup	    ; save all the sine values from 0 to 2pi at consectutive addresses
-	movlb	 0x2		; set BSR to Bank 2
+Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
+	movlb	 0x2		; save in BANK 2
 	movlw    0x7f
 	movwf    0x0 , BANKED
 	movlw    0x82
@@ -520,9 +521,7 @@ Sine_Setup	    ; save all the sine values from 0 to 2pi at consectutive addresse
 	movwf    0xfe , BANKED
 	movlw    0x7f
 	movwf    0xff , BANKED
-	
-	movlb	 0x00		; set BSR to Bank 0
-	
+	movlb	 0x00		; reset BSR to Bank 0
 	return
 
 

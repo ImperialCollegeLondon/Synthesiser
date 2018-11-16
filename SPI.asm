@@ -1,9 +1,7 @@
 #include p18f87k22.inc
 
     global  SPI_MasterInit, SPI_MasterTransmit
-    
-
-    
+        
 SPI   code
     
 SPI_MasterInit	; Set Clock edge to positive
@@ -23,11 +21,7 @@ Wait_Transmit	; Wait for transmission to complete
 	bra 	Wait_Transmit
 	bcf 	PIR2, SSP2IF	; clear interrupt flag
 	return
-	
-
-
-	
-	
+		
     end
 
 
