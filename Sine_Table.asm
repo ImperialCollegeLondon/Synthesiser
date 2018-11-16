@@ -1,9 +1,6 @@
 #include p18f87k22.inc
 
-    global  Sine_Setup
-    extern  counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input
-    extern  delay_count
-    
+    global  Sine_Setup    
    
 Sine_Table    code
     
@@ -526,5 +523,3 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 
 
     end
-
-

@@ -1,15 +1,15 @@
 	#include p18f87k22.inc
 
-	extern  Sine_Setup			    ; 'Sine_Table' routines
-	extern	SPI_MasterInit, SPI_MasterTransmit  ; 'SPI' routines
-	extern	MIDI_Setup, get_midi_slope, receive_midi ; 'MIDI_read' routines
-	extern  UART_Setup, UART_Receive_Byte		 ; 'UART' routines
-	extern  get_output, accumulate		 ; 'Accumulate_generator' routines
-	extern  sawtooth, square, waveform_select; 'Accumulate_generator' routines
-	extern  sqr_zero, triangle, sine	 ; 'Accumulate_generator' routines
+	extern  Sine_Setup			    ; Sine_Table routines
+	extern	SPI_MasterInit, SPI_MasterTransmit  ; SPI routines
+	extern	MIDI_Setup, get_midi_slope, receive_midi ; MIDI_read routines
+	extern  UART_Setup, UART_Receive_Byte		 ; UART routines
+	extern  get_output, accumulate		 ; Accumulate_generator routines
+	extern  sawtooth, square, waveform_select; Accumulate_generator routines
+	extern  sqr_zero, triangle, sine	 ; Accumulate_generator routines
 	
 	global	accumH, accumL, wav_sel, tri, output, slopeH, slopeL
-	global	input, delay_count, note, output, status
+	global	input, note, output, status
 	
 	
 acs0	udata_acs   ; reserve data space in access ram
@@ -89,7 +89,6 @@ receive_loop
 	movlb	0x00		; ensure bsr bank 0
 	call	receive_midi	; receives the midi signal and sets the 
 	goto	receive_loop	; appropriate slope
-
 
 	
 transmit

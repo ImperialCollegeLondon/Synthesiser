@@ -4,7 +4,6 @@
 
 UART    code
         
-    
 UART_Setup
     bcf	    TXSTA1, SYNC    ; synchronous  - asynchronous
     bcf	    TXSTA1, BRGH    ; slow speed    - BRGH low	
@@ -17,7 +16,6 @@ UART_Setup
     bsf	    RCSTA1, CREN    ; continuous receive enable
     return
 
-    
 UART_Receive_Byte  
     btfss   PIR1,RC1IF	    ; RC1IF is set when RCREG1 is full
     bra	    UART_Receive_Byte	; wait for flag
@@ -26,5 +24,3 @@ UART_Receive_Byte
     
  
     end
-
-

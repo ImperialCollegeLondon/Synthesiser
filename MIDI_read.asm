@@ -1,7 +1,7 @@
 #include p18f87k22.inc
 
     global  MIDI_Setup, get_midi_slope, receive_midi
-    extern  counter, slopeH, slopeL, note, UART_Receive_Byte, status, input
+    extern  slopeH, slopeL, note, UART_Receive_Byte, status, input
     extern  output
     
 
@@ -19,10 +19,10 @@ receive_midi ; receives the midi and sets the appropriate slope or outputs zero
 ;	movwf	INDF1			
 	movwf	note			; put it into note 
 	call	UART_Receive_Byte	; clear velocity byte flag
-	call	get_midi_slope		; get the slopeL/H stored at MIDI note no.
+	call	get_midi_slope		; get slopeL/H stored at MIDI note no.
 	movlw	0x01
-	movwf	input			; set the input as 0x01, meaning there is an input
-	return
+	movwf	input			; set the input as 0x01, meaning there..
+	return				; ..is an input
 note_off
 	; clear 2 bytes flags
 	call	UART_Receive_Byte
@@ -38,15 +38,15 @@ get_midi_slope;_16
 	movff	note, FSR2L
 	movlw	0x01
 	movwf	FSR2H		; slopeH's stored in bank 1
-	movf    INDF2, W	;Read contents of address in FSR2 not changing it
+	movf    INDF2, W	; Read contents of address (not incrementing)
 	movwf	slopeH
 	movlw	0x03
 	movwf	FSR2H		; slopeL's stored in bank 3
-	movf    INDF2, W	;Read contents of address in FSR2 not changing it
+	movf    INDF2, W	; Read contents of address (not incrementing)
 	movwf	slopeL
 	return
 	
-MIDI_Setup;_16	    ; save all the slopes at address which is coordinate on keypad
+MIDI_Setup    ; save all the slopes at address which is coordinate on keypad
 	movlb	 0x01
 	movlb    0x01    ; slope high bytes stored in bank 1
 	movlw    0x1

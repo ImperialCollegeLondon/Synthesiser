@@ -59,7 +59,7 @@ sqr_zero
 	
 	
 triangle	; doubles freq of accum, then alternates between outputting...
-	movf	slopeH	    ;..the accumulator and ff-accumulator
+	movf	slopeH	    ;..the accumulator and ff minus accumulator
 	cpfsgt	accumH	    ; make change of direction if accumulator has reached
 	call	up_down	    ; its peak ie. now it is 0x00
 	call	accumulate
