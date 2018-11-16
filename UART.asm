@@ -39,10 +39,7 @@ UART_Receive_Byte
     movf    RCREG1, W
     return
     
-    
-
-
-    end
+ 
     end
 
 

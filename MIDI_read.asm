@@ -31,7 +31,7 @@ get_midi_slope
 
 	
 note_off
-	; clear 2 bytes
+	; clear 2 bytes flags
 	call	UART_Receive_Byte
 	call	UART_Receive_Byte
 	goto	output_zero
@@ -44,7 +44,7 @@ note_off
   
 MIDI_Setup	    ; save all the slopes at address which is coordinate on keypad
 	movlb	 0x01
-	movlb    0x01    ; slope low bytes stored in bank 1
+	movlb    0x01    ; slope high bytes stored in bank 1
 	movlw    0x1
 	movwf    0x24 ,BANKED
 	movlw    0x1

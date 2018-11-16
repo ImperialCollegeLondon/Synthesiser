@@ -80,7 +80,7 @@ timer
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x06	; set period compare registers
+	movlw	0x05		; set period compare registers
 	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
 	movlw	0x0c
 	movwf	CCPR4L
@@ -109,7 +109,7 @@ receive_midi		; receives the midi signal and sets the appropriate slope or outpu
 	goto	note_off
 	call	UART_Receive_Byte	; receive note byte
 	movwf	INDF1	
-	call	UART_Receive_Byte ;clear velocity byte
+	call	UART_Receive_Byte   ;clear velocity byte flag
 	call	get_midi_slope
 	movlw	0x01
 	movwf	input		; set the input as 0x01, meaning there is an input
