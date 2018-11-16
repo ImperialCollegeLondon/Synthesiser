@@ -7,8 +7,9 @@
 MIDI	code
 
 get_midi_slope;_16
-	movf	INDF1, W	; increment FSR1
-	movwf   FSR2L	
+;	movf	INDF1, W	; move address (MIDI note no.) of slopeH and..
+;	movwf   FSR2L		; ..slopeL into FSR2L
+	movff	note, FSR2L
 	movlw	0x01
 	movwf	FSR2H		; slopeH's stored in bank 1
 	movf    INDF2, W	;Read contents of address in FSR2 not changing it
@@ -21,14 +22,15 @@ get_midi_slope;_16
 	
 		
 receive_midi		; receives the midi signal and sets the appropriate slope or outputs zero
-	lfsr	FSR1, note
+	;lfsr	FSR1, note		; put address to save note into FRS1
 	call	UART_Receive_Byte	; waits for status byte
-	movwf	status
+	movwf	status			; saves status byte
 	movlw	0x8f
-	cpfsgt	status
-	goto	note_off
-	call	UART_Receive_Byte	; receive note byte
-	movwf	INDF1	
+	cpfsgt	status			; checks if status is on or off
+	goto	note_off		
+	call	UART_Receive_Byte	; receive the note byte
+;	movwf	INDF1			
+	movwf	note			; put it into note 
 	call	UART_Receive_Byte   ;clear velocity byte flag
 	call	get_midi_slope
 	movlw	0x01
