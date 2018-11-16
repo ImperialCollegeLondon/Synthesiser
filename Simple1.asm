@@ -1,15 +1,15 @@
 	#include p18f87k22.inc
 
-	extern  Sine_Setup			    ; external look up tables
-	extern	MIDI_Setup
-	extern	SPI_MasterInit, SPI_MasterTransmit  ; external SPI subroutines
-	extern	get_midi_slope, receive_midi
-	extern  UART_Setup, UART_Receive_Byte
-	extern  get_output, accumulate, waveform_select, sawtooth, square
-	extern  sqr_zero, triangle, sine
+	extern  Sine_Setup			    ; 'Sine_Table' routines
+	extern	SPI_MasterInit, SPI_MasterTransmit  ; 'SPI' routines
+	extern	MIDI_Setup, get_midi_slope, receive_midi ; 'MIDI_read' routines
+	extern  UART_Setup, UART_Receive_Byte		 ; 'UART' routines
+	extern  get_output, accumulate		 ; 'Accumulate_generator' routines
+	extern  sawtooth, square, waveform_select; 'Accumulate_generator' routines
+	extern  sqr_zero, triangle, sine	 ; 'Accumulate_generator' routines
 	
 	global	counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL
-	global	input, delay_count, buffer, output, status
+	global	input, delay_count, note, output, status
 	
 	
 acs0	udata_acs   ; reserve data space in access ram
@@ -26,9 +26,7 @@ slopeL		res 1	; slope low byte
 input		res 1	; 0 then no input, 1 means input
 delay_count	res 1   ; reserve one byte for counter in the delay routine
 status		res 1	; byte to save status byte for compare
-		
-tables		udata	0x400    ; reserve data anywhere in RAM (here at 0x400)
-buffer		res 0x80    ; reserve 128 bytes for message data
+note		res 1	; one byte for note
 	
 rst	code	0    ; reset vector
 	goto	setup
@@ -42,19 +40,19 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	call	Sine_Setup
 	call	UART_Setup
 	movlw	0xff
-	movwf	TRISJ		; set 4 PORTJ all inputs for 4 waveforms control
+	movwf	TRISJ		; set PORTJ all inputs for 4 waveforms control
 	movlw	0x00
-	movwf	TRISH		; set PORTH output
-	movwf	input
-	movwf	output
+	movwf	TRISH		; set PORTH to output for DAC CS
+	movwf	input		; default no input
+	movwf	output		; default output zero
 	movlw	0x01
-	movwf	wav_sel		; default is sawtooth
+	movwf	wav_sel		; default sound is sawtooth
 	goto    start
 	; ********PORT USES********
 	; PORTJ for waveform control
 	; PORTE for keypad inputs
 	; PORTD sends SPI
-	; PORTH used for chip select
+	; PORTH used for DAC chip select
 	; PORTC used for UART recieve
 	;********BANK USES********
 	; BANK 1 for slopeH
@@ -80,8 +78,8 @@ timer
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
 	movlw	0x06		; set period compare registers
-	movwf	CCPR4H		; 0x1E84 gives MSB blink rate at 1Hz
-	movlw	0x3F
+	movwf	CCPR4H		; 0x63F is .1599 (rollover) = 10kHz sample rate
+	movlw	0x3F		
 	movwf	CCPR4L
 	bsf	PIE4,CCP4IE	; Enable CCP4 interrupt
 	bsf	INTCON,PEIE	; Enable peripheral interrupts
@@ -90,32 +88,29 @@ timer
 
 receive_loop
 	banksel PADCFG1		; PADCFG1 is not in Access Bank!!
-	movlb	0x00
-	call	receive_midi	; receives the midi signal and sets the appropriate slope
-	goto	receive_loop
+	movlb	0x00		; ensure bsr bank 0
+	call	receive_midi	; receives the midi signal and sets the 
+	goto	receive_loop	; appropriate slope
 
 
 	
 transmit
 	movlw	0x01
-	cpfslt	PORTJ, ACCESS	; want to stay at current waveform	
+	cpfslt	PORTJ, ACCESS	; want to stay at current waveform if PORTJ is 0
 	movff	PORTJ, wav_sel	; save wav_sel
 	movlw	0x01
 	cpfslt	input		; check if there is an input
 	call	get_output	; hopefully this delay isnt a problem
 	movlw	0x00
 	movwf	PORTH		; set CS low
-	movlw	0x50		;SEND ZERO FOR UPPER NIBBLE OF DATA TO DAC WORKS FOR ONE NOTE ONLY!!!!!!!!!!!!!
+	movlw	0x50		; send zero for upper nibble data (only 1 note)
 	call	SPI_MasterTransmit  ;takes data in through W
 	movf	output, W
 	call	SPI_MasterTransmit  ;takes data in through W
 	movlw	0x01		 ; set CS high
 	movwf	PORTH
 	return
-	
-	
-	
 
-		
+	
 	end
 	

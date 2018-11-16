@@ -2,7 +2,7 @@
 
     global  get_output, accumulate, waveform_select, sawtooth, square
     global  sqr_zero, triangle, sine
-    extern  counter, slopeH, slopeL, buffer, UART_Receive_Byte
+    extern  counter, slopeH, slopeL, UART_Receive_Byte
     extern  accumH, accumL, output, wav_sel, tri
     
 

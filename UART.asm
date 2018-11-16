@@ -1,7 +1,6 @@
 #include p18f87k22.inc
 
     global  UART_Setup, UART_Receive_Byte
-    extern  counter, accumH, accumL, wav_sel, tri, output, slopeH, slopeL, input, delay_count
 
 UART    code
         

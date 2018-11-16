@@ -1,13 +1,13 @@
 #include p18f87k22.inc
 
     global  MIDI_Setup, get_midi_slope, receive_midi
-    extern  counter, slopeH, slopeL, buffer, UART_Receive_Byte, status, input, output
+    extern  counter, slopeH, slopeL, note, UART_Receive_Byte, status, input, output
     
 
 MIDI	code
 
 get_midi_slope;_16
-	movf	POSTINC1, W	; increment FSR1
+	movf	INDF1, W	; increment FSR1
 	movwf   FSR2L	
 	movlw	0x01
 	movwf	FSR2H		; slopeH's stored in bank 1
@@ -17,20 +17,11 @@ get_midi_slope;_16
 	movwf	FSR2H		; slopeL's stored in bank 3
 	movf    INDF2, W	;Read contents of address in FSR2 not changing it
 	movwf	slopeL
-	; reseting FSR1 when it gets to end of buffer, not workin?
-	movlw	0x01
-	addwf	counter
-;	movlw	0x80
-;	cpfsgt	counter
-;	return
-;	lfsr	FSR1, buffer
-;	movlw	0x00
-;	movwf	counter
 	return
 	
 		
 receive_midi		; receives the midi signal and sets the appropriate slope or outputs zero
-	lfsr	FSR1, buffer
+	lfsr	FSR1, note
 	call	UART_Receive_Byte	; waits for status byte
 	movwf	status
 	movlw	0x8f
