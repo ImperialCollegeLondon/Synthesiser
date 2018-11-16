@@ -30,9 +30,6 @@ UART_Setup
 
     
     
-    
-    
-    
 UART_Receive_Byte  
     btfss   PIR1,RC1IF	    ; RC1IF is set when RCREG1 is full (cleared when read)
     bra	    UART_Receive_Byte
