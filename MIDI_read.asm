@@ -1,12 +1,17 @@
 #include p18f87k22.inc
 
-    global  MIDI_Setup, get_midi_slope, receive_midi
-    extern  slopeH, slopeL, note, UART_Receive_Byte, status, input
-    extern  output
+    global  MIDI_Setup, get_midi_slope, receive_midi, slopeH, slopeL 
+    extern  UART_Receive_Byte, status, input, output
     
-
+    
+acs0	udata_acs   ; reserve data space in access ram
+			
+slopeH		res 1	; to put the slope into high
+slopeL		res 1	; slope low byte
+note		res 1	; one byte for note		
+status		res 1	; byte to save status byte for compare on/off
+		
 MIDI	code
-
 		
 receive_midi ; receives the midi and sets the appropriate slope or outputs zero
 	;lfsr	FSR1, note		; put address to save note into FRS1

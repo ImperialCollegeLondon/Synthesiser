@@ -3,9 +3,14 @@
     global  get_output, accumulate, waveform_select, sawtooth, square
     global  sqr_zero, triangle, sine
     extern  slopeH, slopeL, UART_Receive_Byte
-    extern  accumH, accumL, output, wav_sel, tri
+    extern  output, wav_sel
     
-
+acs0	udata_acs   ; reserve data space in access ram
+	
+accumH		res 1	; the accumulator high byte	
+accumL		res 1	; the accumulator  low byte
+tri		res 1   ; for selecting up/down for triangle wave
+		
 Accumu	code
 
 get_output
@@ -14,8 +19,7 @@ get_output
 	call	waveform_select	; selects waveform and makes W value to output
 	movwf	output
 	return
-	
-	
+
 
 accumulate
 	movf	slopeL, W

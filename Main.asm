@@ -1,31 +1,23 @@
 	#include p18f87k22.inc
 
-	extern  Sine_Setup			    ; Sine_Table routines
-	extern	SPI_MasterInit, SPI_MasterTransmit  ; SPI routines
-	extern	MIDI_Setup, get_midi_slope, receive_midi ; MIDI_read routines
-	extern  UART_Setup, UART_Receive_Byte		 ; UART routines
-	extern  get_output, accumulate		 ; Accumulate_generator routines
-	extern  sawtooth, square, waveform_select; Accumulate_generator routines
-	extern  sqr_zero, triangle, sine	 ; Accumulate_generator routines
+	extern  Sine_Setup			    ; 'Sine_Table' routines
+	extern	SPI_MasterInit, SPI_MasterTransmit  ; 'SPI' routines
+	extern	MIDI_Setup, get_midi_slope, receive_midi ; 'MIDI_read' routines
+	extern  UART_Setup, UART_Receive_Byte		 ; 'UART' routines
+	extern  get_output, accumulate		 ; 'Output_gen' routines
+	extern  sawtooth, square, waveform_select; 'Output_gen' routines
+	extern  sqr_zero, triangle, sine	 ; 'Output_gen' routines
 	
-	global	accumH, accumL, wav_sel, tri, output, slopeH, slopeL
-	global	input, note, output, status
+	global	output, input, wav_sel, status
 	
 	
 acs0	udata_acs   ; reserve data space in access ram
-
-		
-accumH		res 1	; the accumulator high byte	
-accumL		res 1	; the accumulator  low byte		
-wav_sel		res 1	; the byte that is used to choose waveform
-tri		res 1   ; for selecting up/down for triangle wave
-output		res 1	; a byte to put the output into
-slopeH		res 1	; to put the slope into high
-slopeL		res 1	; slope low byte
-input		res 1	; 0 then no input, 1 means input
-status		res 1	; byte to save status byte for compare
-note		res 1	; one byte for note
 	
+; variables used in set up
+output		res 1	; a byte to put the output into
+input		res 1	; 0 then no input, 1 means input
+wav_sel		res 1	; the byte that is used to choose waveform
+		
 rst	code	0    ; reset vector
 	goto	setup
 
@@ -37,8 +29,8 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	call	MIDI_Setup
 	call	Sine_Setup
 	call	UART_Setup
-	movlw	0xff
-	movwf	TRISJ		; set PORTJ all inputs for 4 waveforms control
+	movlw	0x0f
+	movwf	TRISJ		; set 4 PORTJ inputs for 4 waveforms control
 	movlw	0x00
 	movwf	TRISH		; set PORTH to output for DAC CS
 	movwf	input		; default no input
