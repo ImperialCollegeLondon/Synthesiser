@@ -1,7 +1,7 @@
 #include p18f87k22.inc
 
     global  MIDI_Setup, get_midi_slope, receive_midi, slopeH, slopeL 
-    extern  UART_Receive_Byte, status, input, output
+    extern  UART_Receive_Byte, input, output
     
     
 acs0	udata_acs   ; reserve data space in access ram
@@ -37,16 +37,16 @@ note_off
 	movwf	output
 	return
 	
-get_midi_slope;_16
-;	movf	INDF1, W	; move address (MIDI note no.) of slopeH and..
-;	movwf   FSR2L		; ..slopeL into FSR2L
-	movff	note, FSR2L
-	movlw	0x01
+get_midi_slope
+;	movf	INDF1, W	
+;	movwf   FSR2L		
+	movff	note, FSR2L	; move address (MIDI note no.) of slopeH and..
+	movlw	0x01		; ..slopeL into FSR2L
 	movwf	FSR2H		; slopeH's stored in bank 1
 	movf    INDF2, W	; Read contents of address (not incrementing)
 	movwf	slopeH
-	movlw	0x03
-	movwf	FSR2H		; slopeL's stored in bank 3
+	movlw	0x03		; slopeL's stored in bank 3
+	movwf	FSR2H		
 	movf    INDF2, W	; Read contents of address (not incrementing)
 	movwf	slopeL
 	return

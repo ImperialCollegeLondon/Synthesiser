@@ -1,19 +1,17 @@
 	#include p18f87k22.inc
 
-	extern  Sine_Setup			    ; 'Sine_Table' routines
-	extern	SPI_MasterInit, SPI_MasterTransmit  ; 'SPI' routines
-	extern	MIDI_Setup, get_midi_slope, receive_midi ; 'MIDI_read' routines
-	extern  UART_Setup, UART_Receive_Byte		 ; 'UART' routines
-	extern  get_output, accumulate		 ; 'Output_gen' routines
-	extern  sawtooth, square, waveform_select; 'Output_gen' routines
-	extern  sqr_zero, triangle, sine	 ; 'Output_gen' routines
+	extern  Sine_Setup			    ; 'Sine_Table.asm' routine
+	extern	SPI_MasterInit, SPI_MasterTransmit  ; 'SPI.asm' routines
+	extern	MIDI_Setup, receive_midi	    ; 'MIDI_read.asm' routines
+	extern  UART_Setup			    ; 'UART.asm' routine
+	extern  get_output			    ; 'Output_gen.asm' routine
 	
-	global	output, input, wav_sel, status
+	global	output, input, wav_sel
 	
 	
 acs0	udata_acs   ; reserve data space in access ram
 	
-; variables used in set up
+; variables used in setup
 output		res 1	; a byte to put the output into
 input		res 1	; 0 then no input, 1 means input
 wav_sel		res 1	; the byte that is used to choose waveform
@@ -38,13 +36,14 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movlw	0x01
 	movwf	wav_sel		; default sound is sawtooth
 	goto    start
-; ********PORT USE********
+	
+; *******PORT USE*********
     ; PORTJ for waveform control
     ; PORTE for keypad inputs
     ; PORTD sends SPI
     ; PORTH used for DAC chip select
     ; PORTC used for UART recieve
-;********BANK USE********
+;*******BANK USE*********
     ; BANK 1 for slopeH
     ; BANK 2 for sine
     ; BANK 3 for slopeL

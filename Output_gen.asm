@@ -1,9 +1,9 @@
 #include p18f87k22.inc
 
-    global  get_output, accumulate, waveform_select, sawtooth, square
-    global  sqr_zero, triangle, sine
-    extern  slopeH, slopeL, UART_Receive_Byte
-    extern  output, wav_sel
+    global  get_output, accumulate, waveform_select, sawtooth, square, sqr_zero
+    global  triangle, sine
+    extern  slopeH, slopeL, UART_Receive_Byte, output, wav_sel
+   
     
 acs0	udata_acs   ; reserve data space in access ram
 	
