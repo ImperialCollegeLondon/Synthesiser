@@ -46,16 +46,16 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movlw	0x01
 	movwf	wav_sel		; default sound is sawtooth
 	goto    start
-	; ********PORT USES********
-	; PORTJ for waveform control
-	; PORTE for keypad inputs
-	; PORTD sends SPI
-	; PORTH used for DAC chip select
-	; PORTC used for UART recieve
-	;********BANK USES********
-	; BANK 1 for slopeH
-	; BANK 2 for sine
-	; BANK 3 for slopeL
+; ********PORT USE********
+    ; PORTJ for waveform control
+    ; PORTE for keypad inputs
+    ; PORTD sends SPI
+    ; PORTH used for DAC chip select
+    ; PORTC used for UART recieve
+;********BANK USE********
+    ; BANK 1 for slopeH
+    ; BANK 2 for sine
+    ; BANK 3 for slopeL
 
 ; ******* Main programme ****************************************
 inter   code	0x0008		; high vector, no low vector
@@ -85,8 +85,6 @@ timer
 
 
 receive_loop
-	banksel PADCFG1		; PADCFG1 is not in Access Bank!!
-	movlb	0x00		; ensure bsr bank 0
 	call	receive_midi	; receives the midi signal and sets the 
 	goto	receive_loop	; appropriate slope
 
