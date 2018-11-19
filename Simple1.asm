@@ -27,7 +27,7 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	call	MIDI_Setup
 	call	Sine_Setup
 	call	UART_Setup
-	movlw	0x0f
+	movlw	0xff
 	movwf	TRISJ		; set 4 PORTJ inputs for 4 waveforms control
 	movlw	0x00
 	movwf	TRISH		; set PORTH to output for DAC CS
@@ -66,9 +66,9 @@ timer
 	bcf	CCPTMRS1,C4TSEL0
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
-	movlw	0x06		; set period compare registers
-	movwf	CCPR4H		; 0x63F is .1599 (rollover) = 10kHz sample rate
-	movlw	0x3F		
+	movlw	0x01		; set period compare registers
+	movwf	CCPR4H		; 0x63F is .362 (rollover) = 44.077kHz rate
+	movlw	0x68		; (divide 16MHz by 362)
 	movwf	CCPR4L
 	bsf	PIE4,CCP4IE	; Enable CCP4 interrupt
 	bsf	INTCON,PEIE	; Enable peripheral interrupts
@@ -77,7 +77,7 @@ timer
 
 receive_loop
 	call	receive_midi	; receives the midi signal and sets the 
-	goto	receive_loop	; appropriate slope
+	bra	receive_loop	; appropriate slope
 
 	
 transmit

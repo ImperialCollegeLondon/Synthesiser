@@ -28,9 +28,9 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x9 , BANKED
 	movlw    0x9d
 	movwf    0xa , BANKED
-	movlw    0xa1
+	movlw    0xa0
 	movwf    0xb , BANKED
-	movlw    0xa4
+	movlw    0xa3
 	movwf    0xc , BANKED
 	movlw    0xa6
 	movwf    0xd , BANKED
@@ -46,13 +46,13 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x12 , BANKED
 	movlw    0xb8
 	movwf    0x13 , BANKED
-	movlw    0xbb
+	movlw    0xba
 	movwf    0x14 , BANKED
 	movlw    0xbd
 	movwf    0x15 , BANKED
 	movlw    0xc0
 	movwf    0x16 , BANKED
-	movlw    0xc3
+	movlw    0xc2
 	movwf    0x17 , BANKED
 	movlw    0xc5
 	movwf    0x18 , BANKED
@@ -64,15 +64,15 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x1b , BANKED
 	movlw    0xcf
 	movwf    0x1c , BANKED
-	movlw    0xd2
+	movlw    0xd1
 	movwf    0x1d , BANKED
 	movlw    0xd4
 	movwf    0x1e , BANKED
 	movlw    0xd6
 	movwf    0x1f , BANKED
-	movlw    0xd9
+	movlw    0xd8
 	movwf    0x20 , BANKED
-	movlw    0xdb
+	movlw    0xda
 	movwf    0x21 , BANKED
 	movlw    0xdd
 	movwf    0x22 , BANKED
@@ -84,13 +84,13 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x25 , BANKED
 	movlw    0xe5
 	movwf    0x26 , BANKED
-	movlw    0xe7
+	movlw    0xe6
 	movwf    0x27 , BANKED
 	movlw    0xe8
 	movwf    0x28 , BANKED
 	movlw    0xea
 	movwf    0x29 , BANKED
-	movlw    0xec
+	movlw    0xeb
 	movwf    0x2a , BANKED
 	movlw    0xed
 	movwf    0x2b , BANKED
@@ -98,7 +98,7 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x2c , BANKED
 	movlw    0xf0
 	movwf    0x2d , BANKED
-	movlw    0xf2
+	movlw    0xf1
 	movwf    0x2e , BANKED
 	movlw    0xf3
 	movwf    0x2f , BANKED
@@ -116,7 +116,7 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x35 , BANKED
 	movlw    0xfa
 	movwf    0x36 , BANKED
-	movlw    0xfb
+	movlw    0xfa
 	movwf    0x37 , BANKED
 	movlw    0xfb
 	movwf    0x38 , BANKED
@@ -134,7 +134,7 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x3e , BANKED
 	movlw    0xfd
 	movwf    0x3f , BANKED
-	movlw    0xfd
+	movlw    0xfe
 	movwf    0x40 , BANKED
 	movlw    0xfd
 	movwf    0x41 , BANKED
@@ -144,17 +144,17 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x43 , BANKED
 	movlw    0xfd
 	movwf    0x44 , BANKED
-	movlw    0xfc
+	movlw    0xfd
 	movwf    0x45 , BANKED
 	movlw    0xfc
 	movwf    0x46 , BANKED
-	movlw    0xfb
+	movlw    0xfc
 	movwf    0x47 , BANKED
 	movlw    0xfb
 	movwf    0x48 , BANKED
 	movlw    0xfa
 	movwf    0x49 , BANKED
-	movlw    0xf9
+	movlw    0xfa
 	movwf    0x4a , BANKED
 	movlw    0xf9
 	movwf    0x4b , BANKED
@@ -166,213 +166,213 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x4e , BANKED
 	movlw    0xf5
 	movwf    0x4f , BANKED
-	movlw    0xf3
+	movlw    0xf4
 	movwf    0x50 , BANKED
-	movlw    0xf2
+	movlw    0xf3
 	movwf    0x51 , BANKED
 	movlw    0xf1
 	movwf    0x52 , BANKED
-	movlw    0xef
+	movlw    0xf0
 	movwf    0x53 , BANKED
-	movlw    0xee
+	movlw    0xef
 	movwf    0x54 , BANKED
-	movlw    0xec
+	movlw    0xed
 	movwf    0x55 , BANKED
 	movlw    0xeb
 	movwf    0x56 , BANKED
-	movlw    0xe9
+	movlw    0xea
 	movwf    0x57 , BANKED
-	movlw    0xe7
+	movlw    0xe8
 	movwf    0x58 , BANKED
 	movlw    0xe6
 	movwf    0x59 , BANKED
-	movlw    0xe4
+	movlw    0xe5
 	movwf    0x5a , BANKED
-	movlw    0xe2
+	movlw    0xe3
 	movwf    0x5b , BANKED
-	movlw    0xe0
+	movlw    0xe1
 	movwf    0x5c , BANKED
-	movlw    0xde
+	movlw    0xdf
 	movwf    0x5d , BANKED
-	movlw    0xdc
+	movlw    0xdd
 	movwf    0x5e , BANKED
 	movlw    0xda
 	movwf    0x5f , BANKED
-	movlw    0xd7
+	movlw    0xd8
 	movwf    0x60 , BANKED
-	movlw    0xd5
+	movlw    0xd6
 	movwf    0x61 , BANKED
-	movlw    0xd3
+	movlw    0xd4
 	movwf    0x62 , BANKED
 	movlw    0xd1
 	movwf    0x63 , BANKED
-	movlw    0xce
+	movlw    0xcf
 	movwf    0x64 , BANKED
-	movlw    0xcc
+	movlw    0xcd
 	movwf    0x65 , BANKED
-	movlw    0xc9
+	movlw    0xca
 	movwf    0x66 , BANKED
-	movlw    0xc7
+	movlw    0xc8
 	movwf    0x67 , BANKED
-	movlw    0xc4
+	movlw    0xc5
 	movwf    0x68 , BANKED
-	movlw    0xc1
+	movlw    0xc2
 	movwf    0x69 , BANKED
-	movlw    0xbf
+	movlw    0xc0
 	movwf    0x6a , BANKED
-	movlw    0xbc
+	movlw    0xbd
 	movwf    0x6b , BANKED
-	movlw    0xb9
+	movlw    0xba
 	movwf    0x6c , BANKED
-	movlw    0xb6
+	movlw    0xb8
 	movwf    0x6d , BANKED
-	movlw    0xb4
+	movlw    0xb5
 	movwf    0x6e , BANKED
-	movlw    0xb1
+	movlw    0xb2
 	movwf    0x6f , BANKED
-	movlw    0xae
+	movlw    0xaf
 	movwf    0x70 , BANKED
-	movlw    0xab
+	movlw    0xac
 	movwf    0x71 , BANKED
-	movlw    0xa8
+	movlw    0xa9
 	movwf    0x72 , BANKED
-	movlw    0xa5
+	movlw    0xa6
 	movwf    0x73 , BANKED
-	movlw    0xa2
+	movlw    0xa3
 	movwf    0x74 , BANKED
-	movlw    0x9f
+	movlw    0xa0
 	movwf    0x75 , BANKED
-	movlw    0x9c
+	movlw    0x9d
 	movwf    0x76 , BANKED
-	movlw    0x99
+	movlw    0x9a
 	movwf    0x77 , BANKED
-	movlw    0x96
+	movlw    0x97
 	movwf    0x78 , BANKED
-	movlw    0x93
+	movlw    0x94
 	movwf    0x79 , BANKED
-	movlw    0x90
+	movlw    0x91
 	movwf    0x7a , BANKED
-	movlw    0x8d
+	movlw    0x8e
 	movwf    0x7b , BANKED
-	movlw    0x89
+	movlw    0x8b
 	movwf    0x7c , BANKED
-	movlw    0x86
+	movlw    0x88
 	movwf    0x7d , BANKED
-	movlw    0x83
+	movlw    0x85
 	movwf    0x7e , BANKED
-	movlw    0x80
+	movlw    0x82
 	movwf    0x7f , BANKED
-	movlw    0x7d
+	movlw    0x7f
 	movwf    0x80 , BANKED
-	movlw    0x7a
+	movlw    0x7b
 	movwf    0x81 , BANKED
-	movlw    0x77
+	movlw    0x78
 	movwf    0x82 , BANKED
-	movlw    0x74
+	movlw    0x75
 	movwf    0x83 , BANKED
-	movlw    0x70
+	movlw    0x72
 	movwf    0x84 , BANKED
-	movlw    0x6d
+	movlw    0x6f
 	movwf    0x85 , BANKED
-	movlw    0x6a
+	movlw    0x6c
 	movwf    0x86 , BANKED
-	movlw    0x67
+	movlw    0x69
 	movwf    0x87 , BANKED
-	movlw    0x64
+	movlw    0x66
 	movwf    0x88 , BANKED
-	movlw    0x61
+	movlw    0x63
 	movwf    0x89 , BANKED
-	movlw    0x5e
+	movlw    0x60
 	movwf    0x8a , BANKED
-	movlw    0x5b
+	movlw    0x5d
 	movwf    0x8b , BANKED
-	movlw    0x58
+	movlw    0x5a
 	movwf    0x8c , BANKED
-	movlw    0x55
+	movlw    0x57
 	movwf    0x8d , BANKED
-	movlw    0x52
+	movlw    0x54
 	movwf    0x8e , BANKED
-	movlw    0x4f
+	movlw    0x51
 	movwf    0x8f , BANKED
-	movlw    0x4c
+	movlw    0x4e
 	movwf    0x90 , BANKED
-	movlw    0x49
+	movlw    0x4b
 	movwf    0x91 , BANKED
-	movlw    0x47
+	movlw    0x48
 	movwf    0x92 , BANKED
-	movlw    0x44
+	movlw    0x45
 	movwf    0x93 , BANKED
-	movlw    0x41
+	movlw    0x43
 	movwf    0x94 , BANKED
-	movlw    0x3e
+	movlw    0x40
 	movwf    0x95 , BANKED
-	movlw    0x3c
+	movlw    0x3d
 	movwf    0x96 , BANKED
-	movlw    0x39
+	movlw    0x3b
 	movwf    0x97 , BANKED
-	movlw    0x36
+	movlw    0x38
 	movwf    0x98 , BANKED
-	movlw    0x34
+	movlw    0x35
 	movwf    0x99 , BANKED
-	movlw    0x31
+	movlw    0x33
 	movwf    0x9a , BANKED
-	movlw    0x2f
+	movlw    0x30
 	movwf    0x9b , BANKED
-	movlw    0x2c
+	movlw    0x2e
 	movwf    0x9c , BANKED
-	movlw    0x2a
+	movlw    0x2c
 	movwf    0x9d , BANKED
-	movlw    0x28
+	movlw    0x29
 	movwf    0x9e , BANKED
-	movlw    0x26
+	movlw    0x27
 	movwf    0x9f , BANKED
-	movlw    0x23
+	movlw    0x25
 	movwf    0xa0 , BANKED
-	movlw    0x21
+	movlw    0x23
 	movwf    0xa1 , BANKED
-	movlw    0x1f
+	movlw    0x20
 	movwf    0xa2 , BANKED
-	movlw    0x1d
+	movlw    0x1e
 	movwf    0xa3 , BANKED
-	movlw    0x1b
+	movlw    0x1c
 	movwf    0xa4 , BANKED
-	movlw    0x19
+	movlw    0x1a
 	movwf    0xa5 , BANKED
-	movlw    0x17
+	movlw    0x18
 	movwf    0xa6 , BANKED
-	movlw    0x16
+	movlw    0x17
 	movwf    0xa7 , BANKED
-	movlw    0x14
+	movlw    0x15
 	movwf    0xa8 , BANKED
-	movlw    0x12
+	movlw    0x13
 	movwf    0xa9 , BANKED
-	movlw    0x11
+	movlw    0x12
 	movwf    0xaa , BANKED
-	movlw    0xf
+	movlw    0x10
 	movwf    0xab , BANKED
 	movlw    0xe
 	movwf    0xac , BANKED
-	movlw    0xc
+	movlw    0xd
 	movwf    0xad , BANKED
-	movlw    0xb
+	movlw    0xc
 	movwf    0xae , BANKED
 	movlw    0xa
 	movwf    0xaf , BANKED
-	movlw    0x8
+	movlw    0x9
 	movwf    0xb0 , BANKED
-	movlw    0x7
+	movlw    0x8
 	movwf    0xb1 , BANKED
-	movlw    0x6
+	movlw    0x7
 	movwf    0xb2 , BANKED
-	movlw    0x5
+	movlw    0x6
 	movwf    0xb3 , BANKED
-	movlw    0x4
+	movlw    0x5
 	movwf    0xb4 , BANKED
 	movlw    0x4
 	movwf    0xb5 , BANKED
 	movlw    0x3
 	movwf    0xb6 , BANKED
-	movlw    0x2
+	movlw    0x3
 	movwf    0xb7 , BANKED
 	movlw    0x2
 	movwf    0xb8 , BANKED
@@ -400,123 +400,123 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0xc3 , BANKED
 	movlw    0x0
 	movwf    0xc4 , BANKED
-	movlw    0x1
+	movlw    0x0
 	movwf    0xc5 , BANKED
 	movlw    0x1
 	movwf    0xc6 , BANKED
-	movlw    0x2
+	movlw    0x1
 	movwf    0xc7 , BANKED
 	movlw    0x2
 	movwf    0xc8 , BANKED
 	movlw    0x3
 	movwf    0xc9 , BANKED
-	movlw    0x4
+	movlw    0x3
 	movwf    0xca , BANKED
-	movlw    0x5
+	movlw    0x4
 	movwf    0xcb , BANKED
-	movlw    0x6
+	movlw    0x5
 	movwf    0xcc , BANKED
-	movlw    0x7
+	movlw    0x6
 	movwf    0xcd , BANKED
-	movlw    0x8
+	movlw    0x7
 	movwf    0xce , BANKED
-	movlw    0x9
+	movlw    0x8
 	movwf    0xcf , BANKED
-	movlw    0xa
+	movlw    0x9
 	movwf    0xd0 , BANKED
-	movlw    0xb
+	movlw    0xa
 	movwf    0xd1 , BANKED
-	movlw    0xd
+	movlw    0xc
 	movwf    0xd2 , BANKED
-	movlw    0xe
+	movlw    0xd
 	movwf    0xd3 , BANKED
-	movlw    0x10
+	movlw    0xe
 	movwf    0xd4 , BANKED
-	movlw    0x11
+	movlw    0x10
 	movwf    0xd5 , BANKED
-	movlw    0x13
+	movlw    0x12
 	movwf    0xd6 , BANKED
-	movlw    0x15
+	movlw    0x13
 	movwf    0xd7 , BANKED
-	movlw    0x16
+	movlw    0x15
 	movwf    0xd8 , BANKED
-	movlw    0x18
+	movlw    0x17
 	movwf    0xd9 , BANKED
-	movlw    0x1a
+	movlw    0x18
 	movwf    0xda , BANKED
-	movlw    0x1c
+	movlw    0x1a
 	movwf    0xdb , BANKED
-	movlw    0x1e
+	movlw    0x1c
 	movwf    0xdc , BANKED
-	movlw    0x20
+	movlw    0x1e
 	movwf    0xdd , BANKED
-	movlw    0x22
+	movlw    0x20
 	movwf    0xde , BANKED
-	movlw    0x24		
+	movlw    0x23
 	movwf    0xdf , BANKED
-	movlw    0x27
+	movlw    0x25
 	movwf    0xe0 , BANKED
-	movlw    0x29
+	movlw    0x27
 	movwf    0xe1 , BANKED
-	movlw    0x2b
+	movlw    0x29
 	movwf    0xe2 , BANKED
-	movlw    0x2e
+	movlw    0x2c
 	movwf    0xe3 , BANKED
-	movlw    0x30
+	movlw    0x2e
 	movwf    0xe4 , BANKED
-	movlw    0x33
+	movlw    0x30
 	movwf    0xe5 , BANKED
-	movlw    0x35
+	movlw    0x33
 	movwf    0xe6 , BANKED
-	movlw    0x38
+	movlw    0x35
 	movwf    0xe7 , BANKED
-	movlw    0x3a
+	movlw    0x38
 	movwf    0xe8 , BANKED
-	movlw    0x3d
+	movlw    0x3b
 	movwf    0xe9 , BANKED
-	movlw    0x40
+	movlw    0x3d
 	movwf    0xea , BANKED
-	movlw    0x42
+	movlw    0x40
 	movwf    0xeb , BANKED
-	movlw    0x45
+	movlw    0x43
 	movwf    0xec , BANKED
-	movlw    0x48
+	movlw    0x45
 	movwf    0xed , BANKED
-	movlw    0x4b
+	movlw    0x48
 	movwf    0xee , BANKED
-	movlw    0x4e
+	movlw    0x4b
 	movwf    0xef , BANKED
-	movlw    0x51
+	movlw    0x4e
 	movwf    0xf0 , BANKED
-	movlw    0x54
+	movlw    0x51
 	movwf    0xf1 , BANKED
-	movlw    0x57
+	movlw    0x54
 	movwf    0xf2 , BANKED
-	movlw    0x59
+	movlw    0x57
 	movwf    0xf3 , BANKED
-	movlw    0x5c
+	movlw    0x5a
 	movwf    0xf4 , BANKED
-	movlw    0x60
+	movlw    0x5d
 	movwf    0xf5 , BANKED
-	movlw    0x63
+	movlw    0x60
 	movwf    0xf6 , BANKED
-	movlw    0x66
+	movlw    0x63
 	movwf    0xf7 , BANKED
-	movlw    0x69
+	movlw    0x66
 	movwf    0xf8 , BANKED
-	movlw    0x6c
+	movlw    0x69
 	movwf    0xf9 , BANKED
-	movlw    0x6f
+	movlw    0x6c
 	movwf    0xfa , BANKED
-	movlw    0x72
+	movlw    0x6f
 	movwf    0xfb , BANKED
-	movlw    0x75
+	movlw    0x72
 	movwf    0xfc , BANKED
-	movlw    0x78
+	movlw    0x75
 	movwf    0xfd , BANKED
-	movlw    0x7b
+	movlw    0x78
 	movwf    0xfe , BANKED
-	movlw    0x7f
+	movlw    0x7b
 	movwf    0xff , BANKED
 	movlb	 0x00		; reset BSR to Bank 0
 	return
