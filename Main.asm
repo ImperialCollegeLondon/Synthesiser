@@ -1,8 +1,9 @@
 	#include p18f87k22.inc
 
-	extern  Sine_Setup			    ; 'Sine_Table.asm' routine
-	extern	SPI_MasterInit, SPI_MasterTransmit  ; 'SPI.asm' routines
-	extern	MIDI_Setup, receive_midi	    ; 'MIDI_read.asm' routines
+	extern  Sine_Setup, Slope_Setup		    ; 'Table_Setup.asm' routines
+	extern	SPI_MasterInit, SPI_MasterTransmit  ; 'SPI_Trans.asm' routines
+	extern	transmit			    ; 'SPI_Trans.asm' routines
+	extern	receive_midi			    ; 'MIDI.asm' routines
 	extern  UART_Setup			    ; 'UART.asm' routine
 	extern  get_output			    ; 'Output_gen.asm' routine
 	
@@ -24,7 +25,7 @@ main	code
 setup	bcf	EECON1, CFGS	; point to Flash program memory  
 	bsf	EECON1, EEPGD 	; access Flash program memory
 	call	SPI_MasterInit
-	call	MIDI_Setup
+	call	Slope_Setup
 	call	Sine_Setup
 	call	UART_Setup
 	movlw	0xff
@@ -38,7 +39,7 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	goto    start
 	
 ; *******PORT USE*********
-    ; PORTJ for waveform control
+; PORTJ for waveform control
     ; PORTE for keypad inputs
     ; PORTD sends SPI
     ; PORTH used for DAC chip select
@@ -75,27 +76,10 @@ timer
 	bsf	INTCON,GIE	; Enable all interrupts
 
 
+; polls in receive loop until timer interrupts to transmit
 receive_loop
 	call	receive_midi	; receives the midi signal and sets the 
 	bra	receive_loop	; appropriate slope
-
-	
-transmit
-	movlw	0x01
-	cpfslt	PORTJ, ACCESS	; want to stay at current waveform if PORTJ is 0
-	movff	PORTJ, wav_sel	; save wav_sel
-	movlw	0x01
-	cpfslt	input		; check if there is an input
-	call	get_output	; hopefully this delay isnt a problem
-	movlw	0x00
-	movwf	PORTH		; set CS low
-	movlw	0x50		; send zero for upper nibble data (only 1 note)
-	call	SPI_MasterTransmit  ;takes data in through W
-	movf	output, W
-	call	SPI_MasterTransmit  ;takes data in through W
-	movlw	0x01		 ; set CS high
-	movwf	PORTH
-	return
 
 	
 	end
