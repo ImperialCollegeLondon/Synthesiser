@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="65">
+<configurationDescriptor version="62">
   <logicalFolder name="root" displayName="root" projectFiles="true">
     <logicalFolder name="f1" displayName="Source" projectFiles="true">
-      <itemPath>Simple1.asm</itemPath>
-      <itemPath>SPI.asm</itemPath>
-      <itemPath>Sine_Table.asm</itemPath>
-      <itemPath>Keypad_read.asm</itemPath>
+      <itemPath>Main.asm</itemPath>
       <itemPath>config.asm</itemPath>
+      <itemPath>UART.asm</itemPath>
+      <itemPath>MIDI.asm</itemPath>
+      <itemPath>Makefile</itemPath>
+      <itemPath>SPI_Trans.asm</itemPath>
+      <itemPath>Table_Setup.asm</itemPath>
+      <itemPath>Output_Gen.asm</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -22,12 +25,9 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>MPASMWIN</languageToolchain>
-        <languageToolchainVersion>5.81</languageToolchainVersion>
+        <languageToolchainVersion>5.77</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
-      <packs>
-        <pack name="PIC18F-K_DFP" vendor="Microchip" version="1.0.40"/>
-      </packs>
       <compileType>
         <linkerTool>
           <linkerLibItems>
@@ -52,6 +52,10 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
+      <ICD3PlatformTool>
+        <property key="debugoptions.useswbreakpoints" value="true"/>
+        <property key="firmware.download.all" value="false"/>
+      </ICD3PlatformTool>
       <MPASMWIN-AS>
         <property key="cross.reference.file" value=""/>
         <property key="default.radix" value="HEX"/>
