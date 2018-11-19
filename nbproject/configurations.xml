@@ -2,14 +2,14 @@
 <configurationDescriptor version="65">
   <logicalFolder name="root" displayName="root" projectFiles="true">
     <logicalFolder name="f1" displayName="Source" projectFiles="true">
-      <itemPath>Simple1.asm</itemPath>
+      <itemPath>Main.asm</itemPath>
       <itemPath>config.asm</itemPath>
       <itemPath>UART.asm</itemPath>
-      <itemPath>MIDI_read.asm</itemPath>
+      <itemPath>MIDI.asm</itemPath>
       <itemPath>Makefile</itemPath>
-      <itemPath>SPI.asm</itemPath>
-      <itemPath>Sine_Table.asm</itemPath>
-      <itemPath>Accumulate_generator.asm</itemPath>
+      <itemPath>SPI_Trans.asm</itemPath>
+      <itemPath>Table_Setup.asm</itemPath>
+      <itemPath>Output_Gen.asm</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
