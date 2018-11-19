@@ -62,10 +62,13 @@ sqr_zero
 	
 	
 triangle	; doubles freq of accum, then alternates between outputting...
-	movf	slopeH	    ;..the accumulator and ff minus accumulator
-	cpfsgt	accumH	    ; make change of direction if accumulator has.. 
-	call	up_down	    ; ..reached its peak ie. now it is 0x00
 	call	accumulate
+	movf	accumH	    ;..the accumulator and ff minus accumulator
+	subfwb	slopeH, W
+	cpfslt	accumH	    ; make change of direction if accumulator has.. 
+	call	up_down	    ; ..reached its peak ie. now it is 0x00
+	
+	
 	movlw	0x02
 	cpfsgt	tri	    ; 0=up, 3=down
 	bra	sawtooth
@@ -87,7 +90,7 @@ down	    ; switch from down to up
 	return	
 	
 sine		; use accum to point to a table of sine values
-	movlw	0x02		; set BSR to Bank 2
+	movlw	0x02		; set to Bank 2
 	movwf	FSR2H
 	movff	accumH, FSR2L	; put accum into FSR2L for looking up sine
 	movf    INDF2, W	; Read contents of address in FSR2 no increment

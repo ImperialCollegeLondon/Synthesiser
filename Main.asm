@@ -32,6 +32,7 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movwf	TRISJ		; set 4 PORTJ inputs for 4 waveforms control
 	movlw	0x00
 	movwf	TRISH		; set PORTH to output for DAC CS
+	movwf	TRISE
 	movwf	input		; default no input
 	movwf	output		; default output zero
 	movlw	0x01
@@ -40,7 +41,6 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	
 ; *******PORT USE*********
 ; PORTJ for waveform control
-    ; PORTE for keypad inputs
     ; PORTD sends SPI
     ; PORTH used for DAC chip select
     ; PORTC used for UART recieve
@@ -51,8 +51,6 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 
 ; ******* Main programme ****************************************
 inter   code	0x0008		; high vector, no low vector
-	btfss	PIR4,CCP4IF	; check that this is timer0 interrupt
-	retfie	1		; if not then return
 	call	transmit	; generate output and then transmit
 	bcf	PIR4,CCP4IF	; clear interrupt flag
 	retfie  1		; fast return from interrupt
@@ -78,7 +76,11 @@ timer
 
 ; polls in receive loop until timer interrupts to transmit
 receive_loop
+	movlw	0xff
+	movwf	PORTE
 	call	receive_midi	; receives the midi signal and sets the 
+	movlw	0x00
+	movwf	PORTE
 	bra	receive_loop	; appropriate slope
 
 	

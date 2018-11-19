@@ -1,6 +1,6 @@
 #include p18f87k22.inc
 
-    global  get_midi_slope, receive_midi, slopeH, slopeL 
+    global  receive_midi, slopeH, slopeL 
     extern  UART_Receive_Byte, input, output
     
     
@@ -19,6 +19,9 @@ receive_midi ; receives the midi and sets the appropriate slope or outputs zero
 	movlw	0x8f
 	cpfsgt	status			; checks if status is on or off
 	bra	note_off		
+	movlw	0xa0
+	cpfslt	status			; checks if status is not key press
+	bra	note_off	
 	call	UART_Receive_Byte	; receive the note byte		
 	movwf	note			; put it into note 
 	call	UART_Receive_Byte	; clear velocity byte flag
@@ -27,11 +30,10 @@ receive_midi ; receives the midi and sets the appropriate slope or outputs zero
 	movwf	input			; set the input as 0x01, meaning there..
 	return				; ..is an input
 note_off
-	; clear 2 bytes flags
-	call	UART_Receive_Byte
+	call	UART_Receive_Byte	; clear 2 bytes flags
 	call	UART_Receive_Byte
 	movlw	0x00
-	movwf	input		; set input to 0x00 meaning, there is no input
+	movwf	input			; set input to 0x00 meaning, there is no input
 	movwf	output
 	return
 	

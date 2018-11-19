@@ -14,16 +14,10 @@ SPI_MasterInit	; Set Clock edge to positive
 	bcf	TRISD, SDO2
 	bcf	TRISD, SCK2
 	return	
-
-SPI_MasterTransmit  ; Start transmission of data (held in W)
-	movwf 	SSP2BUF
-Wait_Transmit	; Wait for transmission to complete 
-	btfss 	PIR2, SSP2IF
-	bra 	Wait_Transmit
-	bcf 	PIR2, SSP2IF	; clear interrupt flag
-	return
 	
 transmit
+	movlw	0x00
+	movwf	PORTE
 	movlw	0x01
 	cpfslt	PORTJ, ACCESS	; want to stay at current waveform if PORTJ is 0
 	movff	PORTJ, wav_sel	; save wav_sel
@@ -38,7 +32,20 @@ transmit
 	call	SPI_MasterTransmit  ;takes data in through W
 	movlw	0x01		 ; set CS high
 	movwf	PORTH
+	movlw	0x00
+	movwf	PORTE
+	return	
+	
+	
+SPI_MasterTransmit  ; Start transmission of data (held in W)
+	movwf 	SSP2BUF
+Wait_Transmit	; Wait for transmission to complete 
+	btfss 	PIR2, SSP2IF
+	bra 	Wait_Transmit
+	bcf 	PIR2, SSP2IF	; clear interrupt flag
 	return
+	
+
 		
     end
 
