@@ -32,7 +32,6 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	movwf	TRISJ		; set 4 PORTJ inputs for 4 waveforms control
 	movlw	0x00
 	movwf	TRISH		; set PORTH to output for DAC CS
-	movwf	TRISE
 	movwf	input		; default no input
 	movwf	output		; default output zero
 	movlw	0x01
@@ -40,7 +39,7 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	goto    start
 	
 ; *******PORT USE*********
-; PORTJ for waveform control
+    ; PORTJ for waveform control
     ; PORTD sends SPI
     ; PORTH used for DAC chip select
     ; PORTC used for UART recieve
@@ -76,13 +75,8 @@ timer
 
 ; polls in receive loop until timer interrupts to transmit
 receive_loop
-	movlw	0xff
-	movwf	PORTE
 	call	receive_midi	; receives the midi signal and sets the 
-	movlw	0x00
-	movwf	PORTE
 	bra	receive_loop	; appropriate slope
 
-	
 	end
 	

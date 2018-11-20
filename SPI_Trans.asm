@@ -16,8 +16,6 @@ SPI_MasterInit	; Set Clock edge to positive
 	return	
 	
 transmit
-	movlw	0x00
-	movwf	PORTE
 	movlw	0x01
 	cpfslt	PORTJ, ACCESS	; want to stay at current waveform if PORTJ is 0
 	movff	PORTJ, wav_sel	; save wav_sel
@@ -32,8 +30,7 @@ transmit
 	call	SPI_MasterTransmit  ;takes data in through W
 	movlw	0x01		 ; set CS high
 	movwf	PORTH
-	movlw	0x00
-	movwf	PORTE
+	
 	return	
 	
 	
