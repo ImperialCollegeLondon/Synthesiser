@@ -223,29 +223,29 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x3 , BANKED
 	movlw    0x8b
 	movwf    0x4 , BANKED
-	movlw    0x8e
+	movlw    0x8f
 	movwf    0x5 , BANKED
-	movlw    0x91
+	movlw    0x92
 	movwf    0x6 , BANKED
-	movlw    0x94
+	movlw    0x95
 	movwf    0x7 , BANKED
-	movlw    0x97
+	movlw    0x98
 	movwf    0x8 , BANKED
-	movlw    0x9a
+	movlw    0x9b
 	movwf    0x9 , BANKED
-	movlw    0x9d
+	movlw    0x9e
 	movwf    0xa , BANKED
-	movlw    0xa0
+	movlw    0xa1
 	movwf    0xb , BANKED
-	movlw    0xa3
+	movlw    0xa4
 	movwf    0xc , BANKED
-	movlw    0xa6
+	movlw    0xa7
 	movwf    0xd , BANKED
-	movlw    0xa9
+	movlw    0xaa
 	movwf    0xe , BANKED
-	movlw    0xac
+	movlw    0xad
 	movwf    0xf , BANKED
-	movlw    0xaf
+	movlw    0xb0
 	movwf    0x10 , BANKED
 	movlw    0xb2
 	movwf    0x11 , BANKED
@@ -253,33 +253,33 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x12 , BANKED
 	movlw    0xb8
 	movwf    0x13 , BANKED
-	movlw    0xba
+	movlw    0xbb
 	movwf    0x14 , BANKED
-	movlw    0xbd
+	movlw    0xbe
 	movwf    0x15 , BANKED
 	movlw    0xc0
 	movwf    0x16 , BANKED
-	movlw    0xc2
+	movlw    0xc3
 	movwf    0x17 , BANKED
-	movlw    0xc5
+	movlw    0xc6
 	movwf    0x18 , BANKED
 	movlw    0xc8
 	movwf    0x19 , BANKED
-	movlw    0xca
+	movlw    0xcb
 	movwf    0x1a , BANKED
 	movlw    0xcd
 	movwf    0x1b , BANKED
-	movlw    0xcf
+	movlw    0xd0
 	movwf    0x1c , BANKED
-	movlw    0xd1
+	movlw    0xd2
 	movwf    0x1d , BANKED
 	movlw    0xd4
 	movwf    0x1e , BANKED
-	movlw    0xd6
+	movlw    0xd7
 	movwf    0x1f , BANKED
-	movlw    0xd8
+	movlw    0xd9
 	movwf    0x20 , BANKED
-	movlw    0xda
+	movlw    0xdb
 	movwf    0x21 , BANKED
 	movlw    0xdd
 	movwf    0x22 , BANKED
@@ -291,21 +291,21 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x25 , BANKED
 	movlw    0xe5
 	movwf    0x26 , BANKED
-	movlw    0xe6
+	movlw    0xe7
 	movwf    0x27 , BANKED
-	movlw    0xe8
+	movlw    0xe9
 	movwf    0x28 , BANKED
 	movlw    0xea
 	movwf    0x29 , BANKED
-	movlw    0xeb
+	movlw    0xec
 	movwf    0x2a , BANKED
-	movlw    0xed
+	movlw    0xee
 	movwf    0x2b , BANKED
 	movlw    0xef
 	movwf    0x2c , BANKED
 	movlw    0xf0
 	movwf    0x2d , BANKED
-	movlw    0xf1
+	movlw    0xf2
 	movwf    0x2e , BANKED
 	movlw    0xf3
 	movwf    0x2f , BANKED
@@ -313,63 +313,63 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x30 , BANKED
 	movlw    0xf5
 	movwf    0x31 , BANKED
-	movlw    0xf6
-	movwf    0x32 , BANKED
 	movlw    0xf7
-	movwf    0x33 , BANKED
+	movwf    0x32 , BANKED
 	movlw    0xf8
+	movwf    0x33 , BANKED
+	movlw    0xf9
 	movwf    0x34 , BANKED
 	movlw    0xf9
 	movwf    0x35 , BANKED
 	movlw    0xfa
 	movwf    0x36 , BANKED
-	movlw    0xfa
-	movwf    0x37 , BANKED
 	movlw    0xfb
+	movwf    0x37 , BANKED
+	movlw    0xfc
 	movwf    0x38 , BANKED
 	movlw    0xfc
 	movwf    0x39 , BANKED
-	movlw    0xfc
+	movlw    0xfd
 	movwf    0x3a , BANKED
 	movlw    0xfd
 	movwf    0x3b , BANKED
 	movlw    0xfd
 	movwf    0x3c , BANKED
-	movlw    0xfd
+	movlw    0xfe
 	movwf    0x3d , BANKED
-	movlw    0xfd
+	movlw    0xfe
 	movwf    0x3e , BANKED
-	movlw    0xfd
+	movlw    0xfe
 	movwf    0x3f , BANKED
 	movlw    0xfe
 	movwf    0x40 , BANKED
-	movlw    0xfd
+	movlw    0xfe
 	movwf    0x41 , BANKED
-	movlw    0xfd
+	movlw    0xfe
 	movwf    0x42 , BANKED
-	movlw    0xfd
+	movlw    0xfe
 	movwf    0x43 , BANKED
 	movlw    0xfd
 	movwf    0x44 , BANKED
 	movlw    0xfd
 	movwf    0x45 , BANKED
-	movlw    0xfc
+	movlw    0xfd
 	movwf    0x46 , BANKED
 	movlw    0xfc
 	movwf    0x47 , BANKED
-	movlw    0xfb
+	movlw    0xfc
 	movwf    0x48 , BANKED
-	movlw    0xfa
+	movlw    0xfb
 	movwf    0x49 , BANKED
 	movlw    0xfa
 	movwf    0x4a , BANKED
 	movlw    0xf9
 	movwf    0x4b , BANKED
-	movlw    0xf8
+	movlw    0xf9
 	movwf    0x4c , BANKED
-	movlw    0xf7
+	movlw    0xf8
 	movwf    0x4d , BANKED
-	movlw    0xf6
+	movlw    0xf7
 	movwf    0x4e , BANKED
 	movlw    0xf5
 	movwf    0x4f , BANKED
@@ -377,21 +377,21 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x50 , BANKED
 	movlw    0xf3
 	movwf    0x51 , BANKED
-	movlw    0xf1
+	movlw    0xf2
 	movwf    0x52 , BANKED
 	movlw    0xf0
 	movwf    0x53 , BANKED
 	movlw    0xef
 	movwf    0x54 , BANKED
-	movlw    0xed
+	movlw    0xee
 	movwf    0x55 , BANKED
-	movlw    0xeb
+	movlw    0xec
 	movwf    0x56 , BANKED
 	movlw    0xea
 	movwf    0x57 , BANKED
-	movlw    0xe8
+	movlw    0xe9
 	movwf    0x58 , BANKED
-	movlw    0xe6
+	movlw    0xe7
 	movwf    0x59 , BANKED
 	movlw    0xe5
 	movwf    0x5a , BANKED
@@ -403,33 +403,33 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x5d , BANKED
 	movlw    0xdd
 	movwf    0x5e , BANKED
-	movlw    0xda
+	movlw    0xdb
 	movwf    0x5f , BANKED
-	movlw    0xd8
+	movlw    0xd9
 	movwf    0x60 , BANKED
-	movlw    0xd6
+	movlw    0xd7
 	movwf    0x61 , BANKED
 	movlw    0xd4
 	movwf    0x62 , BANKED
-	movlw    0xd1
+	movlw    0xd2
 	movwf    0x63 , BANKED
-	movlw    0xcf
+	movlw    0xd0
 	movwf    0x64 , BANKED
 	movlw    0xcd
 	movwf    0x65 , BANKED
-	movlw    0xca
+	movlw    0xcb
 	movwf    0x66 , BANKED
 	movlw    0xc8
 	movwf    0x67 , BANKED
-	movlw    0xc5
+	movlw    0xc6
 	movwf    0x68 , BANKED
-	movlw    0xc2
+	movlw    0xc3
 	movwf    0x69 , BANKED
 	movlw    0xc0
 	movwf    0x6a , BANKED
-	movlw    0xbd
+	movlw    0xbe
 	movwf    0x6b , BANKED
-	movlw    0xba
+	movlw    0xbb
 	movwf    0x6c , BANKED
 	movlw    0xb8
 	movwf    0x6d , BANKED
@@ -437,29 +437,29 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x6e , BANKED
 	movlw    0xb2
 	movwf    0x6f , BANKED
-	movlw    0xaf
+	movlw    0xb0
 	movwf    0x70 , BANKED
-	movlw    0xac
+	movlw    0xad
 	movwf    0x71 , BANKED
-	movlw    0xa9
+	movlw    0xaa
 	movwf    0x72 , BANKED
-	movlw    0xa6
+	movlw    0xa7
 	movwf    0x73 , BANKED
-	movlw    0xa3
+	movlw    0xa4
 	movwf    0x74 , BANKED
-	movlw    0xa0
+	movlw    0xa1
 	movwf    0x75 , BANKED
-	movlw    0x9d
+	movlw    0x9e
 	movwf    0x76 , BANKED
-	movlw    0x9a
+	movlw    0x9b
 	movwf    0x77 , BANKED
-	movlw    0x97
+	movlw    0x98
 	movwf    0x78 , BANKED
-	movlw    0x94
+	movlw    0x95
 	movwf    0x79 , BANKED
-	movlw    0x91
+	movlw    0x92
 	movwf    0x7a , BANKED
-	movlw    0x8e
+	movlw    0x8f
 	movwf    0x7b , BANKED
 	movlw    0x8b
 	movwf    0x7c , BANKED
@@ -471,13 +471,13 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x7f , BANKED
 	movlw    0x7f
 	movwf    0x80 , BANKED
-	movlw    0x7b
+	movlw    0x7c
 	movwf    0x81 , BANKED
-	movlw    0x78
+	movlw    0x79
 	movwf    0x82 , BANKED
-	movlw    0x75
+	movlw    0x76
 	movwf    0x83 , BANKED
-	movlw    0x72
+	movlw    0x73
 	movwf    0x84 , BANKED
 	movlw    0x6f
 	movwf    0x85 , BANKED
@@ -503,33 +503,33 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0x8f , BANKED
 	movlw    0x4e
 	movwf    0x90 , BANKED
-	movlw    0x4b
+	movlw    0x4c
 	movwf    0x91 , BANKED
-	movlw    0x48
+	movlw    0x49
 	movwf    0x92 , BANKED
-	movlw    0x45
+	movlw    0x46
 	movwf    0x93 , BANKED
 	movlw    0x43
 	movwf    0x94 , BANKED
 	movlw    0x40
 	movwf    0x95 , BANKED
-	movlw    0x3d
+	movlw    0x3e
 	movwf    0x96 , BANKED
 	movlw    0x3b
 	movwf    0x97 , BANKED
 	movlw    0x38
 	movwf    0x98 , BANKED
-	movlw    0x35
+	movlw    0x36
 	movwf    0x99 , BANKED
 	movlw    0x33
 	movwf    0x9a , BANKED
-	movlw    0x30
+	movlw    0x31
 	movwf    0x9b , BANKED
 	movlw    0x2e
 	movwf    0x9c , BANKED
 	movlw    0x2c
 	movwf    0x9d , BANKED
-	movlw    0x29
+	movlw    0x2a
 	movwf    0x9e , BANKED
 	movlw    0x27
 	movwf    0x9f , BANKED
@@ -537,37 +537,37 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0xa0 , BANKED
 	movlw    0x23
 	movwf    0xa1 , BANKED
-	movlw    0x20
+	movlw    0x21
 	movwf    0xa2 , BANKED
-	movlw    0x1e
+	movlw    0x1f
 	movwf    0xa3 , BANKED
-	movlw    0x1c
+	movlw    0x1d
 	movwf    0xa4 , BANKED
-	movlw    0x1a
+	movlw    0x1b
 	movwf    0xa5 , BANKED
-	movlw    0x18
+	movlw    0x19
 	movwf    0xa6 , BANKED
 	movlw    0x17
 	movwf    0xa7 , BANKED
 	movlw    0x15
 	movwf    0xa8 , BANKED
-	movlw    0x13
+	movlw    0x14
 	movwf    0xa9 , BANKED
 	movlw    0x12
 	movwf    0xaa , BANKED
 	movlw    0x10
 	movwf    0xab , BANKED
-	movlw    0xe
+	movlw    0xf
 	movwf    0xac , BANKED
-	movlw    0xd
+	movlw    0xe
 	movwf    0xad , BANKED
 	movlw    0xc
 	movwf    0xae , BANKED
-	movlw    0xa
+	movlw    0xb
 	movwf    0xaf , BANKED
-	movlw    0x9
+	movlw    0xa
 	movwf    0xb0 , BANKED
-	movlw    0x8
+	movlw    0x9
 	movwf    0xb1 , BANKED
 	movlw    0x7
 	movwf    0xb2 , BANKED
@@ -575,21 +575,21 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0xb3 , BANKED
 	movlw    0x5
 	movwf    0xb4 , BANKED
-	movlw    0x4
+	movlw    0x5
 	movwf    0xb5 , BANKED
-	movlw    0x3
+	movlw    0x4
 	movwf    0xb6 , BANKED
 	movlw    0x3
 	movwf    0xb7 , BANKED
 	movlw    0x2
 	movwf    0xb8 , BANKED
-	movlw    0x1
+	movlw    0x2
 	movwf    0xb9 , BANKED
 	movlw    0x1
 	movwf    0xba , BANKED
-	movlw    0x0
+	movlw    0x1
 	movwf    0xbb , BANKED
-	movlw    0x0
+	movlw    0x1
 	movwf    0xbc , BANKED
 	movlw    0x0
 	movwf    0xbd , BANKED
@@ -605,21 +605,21 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0xc2 , BANKED
 	movlw    0x0
 	movwf    0xc3 , BANKED
-	movlw    0x0
+	movlw    0x1
 	movwf    0xc4 , BANKED
-	movlw    0x0
+	movlw    0x1
 	movwf    0xc5 , BANKED
 	movlw    0x1
 	movwf    0xc6 , BANKED
-	movlw    0x1
+	movlw    0x2
 	movwf    0xc7 , BANKED
 	movlw    0x2
 	movwf    0xc8 , BANKED
 	movlw    0x3
 	movwf    0xc9 , BANKED
-	movlw    0x3
-	movwf    0xca , BANKED
 	movlw    0x4
+	movwf    0xca , BANKED
+	movlw    0x5
 	movwf    0xcb , BANKED
 	movlw    0x5
 	movwf    0xcc , BANKED
@@ -627,37 +627,37 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0xcd , BANKED
 	movlw    0x7
 	movwf    0xce , BANKED
-	movlw    0x8
-	movwf    0xcf , BANKED
 	movlw    0x9
-	movwf    0xd0 , BANKED
+	movwf    0xcf , BANKED
 	movlw    0xa
+	movwf    0xd0 , BANKED
+	movlw    0xb
 	movwf    0xd1 , BANKED
 	movlw    0xc
 	movwf    0xd2 , BANKED
-	movlw    0xd
-	movwf    0xd3 , BANKED
 	movlw    0xe
+	movwf    0xd3 , BANKED
+	movlw    0xf
 	movwf    0xd4 , BANKED
 	movlw    0x10
 	movwf    0xd5 , BANKED
 	movlw    0x12
 	movwf    0xd6 , BANKED
-	movlw    0x13
+	movlw    0x14
 	movwf    0xd7 , BANKED
 	movlw    0x15
 	movwf    0xd8 , BANKED
 	movlw    0x17
 	movwf    0xd9 , BANKED
-	movlw    0x18
+	movlw    0x19
 	movwf    0xda , BANKED
-	movlw    0x1a
+	movlw    0x1b
 	movwf    0xdb , BANKED
-	movlw    0x1c
+	movlw    0x1d
 	movwf    0xdc , BANKED
-	movlw    0x1e
+	movlw    0x1f
 	movwf    0xdd , BANKED
-	movlw    0x20
+	movlw    0x21
 	movwf    0xde , BANKED
 	movlw    0x23
 	movwf    0xdf , BANKED
@@ -665,33 +665,33 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0xe0 , BANKED
 	movlw    0x27
 	movwf    0xe1 , BANKED
-	movlw    0x29
+	movlw    0x2a
 	movwf    0xe2 , BANKED
 	movlw    0x2c
 	movwf    0xe3 , BANKED
 	movlw    0x2e
 	movwf    0xe4 , BANKED
-	movlw    0x30
+	movlw    0x31
 	movwf    0xe5 , BANKED
 	movlw    0x33
 	movwf    0xe6 , BANKED
-	movlw    0x35
+	movlw    0x36
 	movwf    0xe7 , BANKED
 	movlw    0x38
 	movwf    0xe8 , BANKED
 	movlw    0x3b
 	movwf    0xe9 , BANKED
-	movlw    0x3d
+	movlw    0x3e
 	movwf    0xea , BANKED
 	movlw    0x40
 	movwf    0xeb , BANKED
 	movlw    0x43
 	movwf    0xec , BANKED
-	movlw    0x45
+	movlw    0x46
 	movwf    0xed , BANKED
-	movlw    0x48
+	movlw    0x49
 	movwf    0xee , BANKED
-	movlw    0x4b
+	movlw    0x4c
 	movwf    0xef , BANKED
 	movlw    0x4e
 	movwf    0xf0 , BANKED
@@ -717,13 +717,13 @@ Sine_Setup	    ; save sine values from 0 to 2pi at consectutive addresses
 	movwf    0xfa , BANKED
 	movlw    0x6f
 	movwf    0xfb , BANKED
-	movlw    0x72
+	movlw    0x73
 	movwf    0xfc , BANKED
-	movlw    0x75
+	movlw    0x76
 	movwf    0xfd , BANKED
-	movlw    0x78
+	movlw    0x79
 	movwf    0xfe , BANKED
-	movlw    0x7b
+	movlw    0x7c
 	movwf    0xff , BANKED
 	movlb	 0x00		; reset BSR to Bank 0
 	return
