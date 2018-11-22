@@ -51,7 +51,7 @@ sawtooth	; sawtooth is just the high byte of the accumulator
 
 	
 square		; uses midpoint of accumulator to switch between 0 or ff
-	movlw	0x80	    ; midpoint of accumulator
+	movlw	0x7f	    ; midpoint of accumulator
 	cpfsgt	accumH
 	bra	sqr_zero 
 	movlw	0xff	    ; square wave max amplitude
