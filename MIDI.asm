@@ -17,7 +17,7 @@ receive_midi ; receives the midi and sets the appropriate slope or outputs zero
 	call	UART_Receive_Byte	; waits for status byte
 	movwf	status			; saves status byte		
 	movlw	0xa0
-	cpfslt	status			; checks if status is not a key press
+	cpfslt	status			; checks if status is not key press
 	bra	note_off	
 	movlw	0x8f
 	cpfsgt	status			; checks if status is on or off
