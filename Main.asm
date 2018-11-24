@@ -65,7 +65,7 @@ timer
 	movlw	b'00001011'	; Compare mode, reset on compare match
 	movwf	CCP4CON
 	movlw	0x01		; set period compare registers
-	movwf	CCPR4H		; 0x63F is .362 (rollover) = 44.077kHz rate
+	movwf	CCPR4H		; 0x168 is .360 (rollover) = 44kHz rate
 	movlw	0x68		; (divide 16MHz by 362)
 	movwf	CCPR4L
 	bsf	PIE4,CCP4IE	; Enable CCP4 interrupt
