@@ -16,8 +16,12 @@ MIDI	code
 receive_midi ; receives the midi and sets the appropriate slope or outputs zero
 	call	UART_Receive_Byte	; waits for status byte
 	movwf	status			; saves status byte		
-	movlw	0x90
-	cpfslt	status			; checks if status is not key on
+	movlw	0xa0
+	cpfslt	status			; checks if status is not a Note On or Off
+	bra	note_off	
+	movwf	status			; saves status byte		
+	movlw	0x8f
+	cpfslt	status			; checks if status is Note Off
 	bra	note_off	
 	call	UART_Receive_Byte	; receive the note byte		
 	movwf	note			; put it into note 
