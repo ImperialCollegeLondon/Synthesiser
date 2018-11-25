@@ -1,6 +1,6 @@
 #include p18f87k22.inc
 
-    global  SPI_MasterInit, SPI_MasterTransmit, transmit
+    global  SPI_MasterInit, transmit
     extern  wav_sel, input, get_output, output
    
 SPI   code
